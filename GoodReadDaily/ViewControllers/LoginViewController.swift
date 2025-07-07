@@ -16,6 +16,9 @@ class LoginViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        emailField.autocapitalizationType = .none
+        passwordField.autocapitalizationType = .none
+        
         view.backgroundColor = .systemBackground
         
         title = "Login"
