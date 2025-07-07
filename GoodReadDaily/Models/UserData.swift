@@ -6,7 +6,7 @@
 //
 
 struct UserData: Codable {
-    var completedAtricleIDs: [String]
+    var completedArticleIDs: [String]
     var inProgressArticleIDs: [String]
     var savedWords: [DictionaryEntry]
     var preferences: UserPreferences

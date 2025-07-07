@@ -11,6 +11,7 @@ struct Article: Codable, Identifiable, Equatable {
     let id: String
     let title: String
     let subtitle: String
+    let author: String
     let genre: String
     let content: String
 }
