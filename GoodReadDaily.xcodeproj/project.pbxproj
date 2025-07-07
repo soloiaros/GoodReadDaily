@@ -6,6 +6,12 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		2045BBB32E1B45300003031A /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = 2045BBB22E1B45300003031A /* FirebaseAuth */; };
+		2045BBB52E1B45300003031A /* FirebaseCore in Frameworks */ = {isa = PBXBuildFile; productRef = 2045BBB42E1B45300003031A /* FirebaseCore */; };
+		2045BBB72E1B45300003031A /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = 2045BBB62E1B45300003031A /* FirebaseFirestore */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXFileReference section */
 		2045BB2A2E1863040003031A /* GoodReadDaily.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = GoodReadDaily.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -36,6 +42,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2045BBB52E1B45300003031A /* FirebaseCore in Frameworks */,
+				2045BBB32E1B45300003031A /* FirebaseAuth in Frameworks */,
+				2045BBB72E1B45300003031A /* FirebaseFirestore in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -78,6 +87,9 @@
 			);
 			name = GoodReadDaily;
 			packageProductDependencies = (
+				2045BBB22E1B45300003031A /* FirebaseAuth */,
+				2045BBB42E1B45300003031A /* FirebaseCore */,
+				2045BBB62E1B45300003031A /* FirebaseFirestore */,
 			);
 			productName = GoodReadDaily;
 			productReference = 2045BB2A2E1863040003031A /* GoodReadDaily.app */;
@@ -107,6 +119,9 @@
 			);
 			mainGroup = 2045BB212E1863040003031A;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				2045BBB12E1B45300003031A /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 2045BB2B2E1863040003031A /* Products */;
 			projectDirPath = "";
@@ -161,6 +176,7 @@
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
+				UIMainStoryboardFile = "";
 			};
 			name = Debug;
 		};
@@ -187,6 +203,7 @@
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
+				UIMainStoryboardFile = "";
 			};
 			name = Release;
 		};
@@ -331,6 +348,35 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		2045BBB12E1B45300003031A /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/firebase/firebase-ios-sdk";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 11.15.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		2045BBB22E1B45300003031A /* FirebaseAuth */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 2045BBB12E1B45300003031A /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseAuth;
+		};
+		2045BBB42E1B45300003031A /* FirebaseCore */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 2045BBB12E1B45300003031A /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseCore;
+		};
+		2045BBB62E1B45300003031A /* FirebaseFirestore */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 2045BBB12E1B45300003031A /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseFirestore;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 2045BB222E1863040003031A /* Project object */;
 }
