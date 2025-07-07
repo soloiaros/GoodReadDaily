@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import FirebaseAuth
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
@@ -15,9 +16,21 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         guard let windowScene = (scene as? UIWindowScene) else { return }
         
         window = UIWindow(windowScene: windowScene)
-        let startVC = FirebaseManager.shared.isLoggedIn ? MainViewController() : GenreSelectionViewController()
-            window?.rootViewController = UINavigationController(rootViewController: startVC)
-            window?.makeKeyAndVisible()
+        
+        let rootVC: UIViewController
+        if AuthManager.shared.currentUser() != nil {
+            let prefs = UserDataManager.shared.userData.preferences
+            if prefs.hasSeenGenreScreen {
+                rootVC = MainViewController()
+            } else {
+                rootVC = GenreSelectionViewController()
+            }
+        } else {
+            rootVC = LoginViewController()
+        }
+        
+        window?.rootViewController = UINavigationController(rootViewController: rootVC)
+        window?.makeKeyAndVisible()
     }
 
     func sceneDidDisconnect(_ scene: UIScene) {
