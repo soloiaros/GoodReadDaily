@@ -1,0 +1,142 @@
+//
+//  ViewController.swift
+//  GoodReadDaily
+//
+//  Created by Yaroslav Solovev on 7/4/25.
+//
+
+import UIKit
+import FirebaseAuth
+
+class MainViewController: UIViewController {
+    
+    private let todaysFeedButton = MainWidgetButton(
+        title: "Today's Feed",
+        subtitle: "Your 3 fresh articles are ready!",
+        isLarge: true,
+    )
+    
+    private let inProcessButton = MainWidgetButton(
+        title: "In Process",
+        subtitle: "Continue reading",
+    )
+    
+    private let dictionaryButton = MainWidgetButton(
+        title: "Dictionary",
+        subtitle: "Words you saved",
+    )
+    
+    private let logoutButton: UIButton = {
+        let button = UIButton(type: .system)
+        button.setTitle("Log Out", for: .normal)
+        button.setTitleColor(.systemRed, for: .normal)
+        button.titleLabel?.font = UIFont.systemFont(ofSize: 16, weight: .semibold)
+        button.translatesAutoresizingMaskIntoConstraints = false
+        return button
+    }()
+
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        title = "GoodReadDaily"
+        view.backgroundColor = .white
+        setupLayout()
+        setupActions()
+    }
+    
+    private func setupLayout() {
+        let stackView = UIStackView(arrangedSubviews: [todaysFeedButton, inProcessButton, dictionaryButton])
+        stackView.axis = .vertical
+        stackView.spacing = 20
+        stackView.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(stackView)
+        view.addSubview(logoutButton)
+        
+        NSLayoutConstraint.activate([
+            logoutButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -16),
+            logoutButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            stackView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 40),
+            stackView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 24),
+            stackView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -24)
+        ])
+    }
+
+    private func setupActions() {
+        todaysFeedButton.addTarget(self, action: #selector(openTodaysFeed), for: .touchUpInside)
+        inProcessButton.addTarget(self, action: #selector(openInProgress), for: .touchUpInside)
+        dictionaryButton.addTarget(self, action: #selector(openDictionary), for: .touchUpInside)
+        logoutButton.addTarget(self, action: #selector(handleLogout), for: .touchUpInside)
+    }
+
+    @objc private func openTodaysFeed() {
+        let vc = TodaysFeedViewController()
+        navigationController?.pushViewController(vc, animated: true)
+    }
+
+    @objc private func openInProgress() {
+        let vc = InProcessViewController()
+        navigationController?.pushViewController(vc, animated: true)
+    }
+
+    @objc private func openDictionary() {
+        let vc = DictionaryViewController()
+        navigationController?.pushViewController(vc, animated: true)
+    }
+    
+    @objc private func handleLogout() {
+        do {
+            try Auth.auth().signOut()
+            let loginVC = LoginViewController()
+            let navVC = UINavigationController(rootViewController: loginVC)
+            if let sceneDelegate = UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate {
+                sceneDelegate.window?.rootViewController = navVC
+            }
+        } catch let signOutError as NSError {
+            print("Error signing out: %@", signOutError)
+        }
+    }
+}
+
+class MainWidgetButton: UIButton {
+    
+    private let titleLabelView = UILabel()
+    private let subtitleLabelView = UILabel()
+    
+    init(title: String, subtitle: String, isLarge: Bool = false) {
+        super.init(frame: .zero)
+        setupUI(title: title, subtitle: subtitle, isLarge: isLarge)
+    }
+
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+
+    private func setupUI(title: String, subtitle: String, isLarge: Bool) {
+        translatesAutoresizingMaskIntoConstraints = false
+        backgroundColor = UIColor.systemBrown.withAlphaComponent(0.1)
+        layer.cornerRadius = 12
+        clipsToBounds = true
+        
+        isUserInteractionEnabled = true
+        
+        titleLabelView.text = title
+        titleLabelView.font = UIFont.systemFont(ofSize: isLarge ? 22 : 18, weight: .bold)
+        
+        subtitleLabelView.text = subtitle
+        subtitleLabelView.font = UIFont.systemFont(ofSize: isLarge ? 16 : 14)
+        subtitleLabelView.textColor = .darkGray
+        
+        let stack = UIStackView(arrangedSubviews: [titleLabelView, subtitleLabelView])
+        stack.axis = .vertical
+        stack.spacing = 6
+        stack.translatesAutoresizingMaskIntoConstraints = false
+        
+        addSubview(stack)
+
+        NSLayoutConstraint.activate([
+            heightAnchor.constraint(equalToConstant: isLarge ? 120 : 80),
+            stack.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 16),
+            stack.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -16),
+            stack.centerYAnchor.constraint(equalTo: centerYAnchor)
+        ])
+    }
+}
