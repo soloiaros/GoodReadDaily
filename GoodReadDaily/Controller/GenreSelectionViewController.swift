@@ -71,16 +71,16 @@ class GenreSelectionViewController: UIViewController {
 
     @objc func finishOnboarding() {
         var userData = UserDataManager.shared.userData
-        print(Array(selectedGenres))
         userData.preferences.genres = Array(selectedGenres)
         userData.preferences.hasSeenGenreScreen = true
         UserDataManager.shared.userData = userData
         UserDataManager.shared.save()
         
         let todaysArticles = ArticleManager.getRandomArticles(for: Array(selectedGenres), count: 3)
-        userData.todaysArticles = todaysArticles
+        ArticleStorage.storeTodaysArticles(todaysArticles)
+        userData.todaysArticles = todaysArticles  // maybe delete from here <-
         UserDataManager.shared.userData = userData
-        UserDataManager.shared.save()
+        UserDataManager.shared.save() //to here <-
 
         let mainVC = MainViewController()
         let navController = UINavigationController(rootViewController: mainVC)

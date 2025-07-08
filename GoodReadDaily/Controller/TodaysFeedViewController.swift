@@ -10,6 +10,8 @@ import UIKit
 final class TodaysFeedViewController: UIViewController {
     private var articles: [Article] = []
     private let tableView = UITableView(frame: .zero)
+    
+    private let refreshControl = UIRefreshControl()
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -31,17 +33,46 @@ final class TodaysFeedViewController: UIViewController {
         
         tableView.dataSource = self
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: "ArticleCell")
+        
+        refreshControl.addTarget(self, action: #selector(refreshArticles), for: .valueChanged)
+        tableView.refreshControl = refreshControl
     }
     
     private func loadUserArticles() {
-        let genres = UserDataManager.shared.userData.preferences.genres
-        print("User's genres: \(genres)")
-        let loadedArticles = ArticleManager.getRandomArticles(for: genres, count: 3)
-        articles = loadedArticles
-        print("Loaded articles: \(articles)")
-        tableView.reloadData()
+        if ArticleStorage.shouldRefreshArticles() {
+            refreshArticles()
+        }
+        else if let storedArticles = ArticleStorage.getTodaysArticles() {
+            articles = storedArticles
+            tableView.reloadData()
+        }
+        else {
+            refreshArticles()
+        }
         
-        if loadedArticles.isEmpty {
+//        let genres = UserDataManager.shared.userData.preferences.genres
+//        print("User's genres: \(genres)")
+//        let loadedArticles = ArticleManager.getRandomArticles(for: genres, count: 3)
+//        articles = loadedArticles
+//        print("Loaded articles: \(articles)")
+//        tableView.reloadData()
+//        
+//        if loadedArticles.isEmpty {
+//            showEmptyState()
+//        }
+    }
+    
+    @objc private func refreshArticles() {
+        let genres = UserDataManager.shared.userData.preferences.genres
+        let newArticles = ArticleManager.getRandomArticles(for: genres, count: 3)
+        
+        ArticleStorage.storeTodaysArticles(newArticles)
+        articles = newArticles
+        
+        tableView.reloadData()
+        refreshControl.endRefreshing()
+        
+        if newArticles.isEmpty {
             showEmptyState()
         }
     }
