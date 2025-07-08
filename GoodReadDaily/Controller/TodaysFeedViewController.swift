@@ -36,6 +36,8 @@ final class TodaysFeedViewController: UIViewController {
         
         refreshControl.addTarget(self, action: #selector(refreshArticles), for: .valueChanged)
         tableView.refreshControl = refreshControl
+        
+        tableView.delegate = self
     }
     
     private func loadUserArticles() {
@@ -113,3 +115,11 @@ extension TodaysFeedViewController: UITableViewDataSource {
     }
 }
 
+extension TodaysFeedViewController: UITableViewDelegate {
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        tableView.deselectRow(at: indexPath, animated: true)
+        let selectedArticle = articles[indexPath.row]
+        let detailVC = ArticleViewController(article: selectedArticle)
+        navigationController?.pushViewController(detailVC, animated: true)
+    }
+}
