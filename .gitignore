@@ -1,2 +1,5 @@
 GoodReadDaily.xcodeproj/project.xcworkspace/xcuserdata/*.xcuserstate
 **/xcuserdata/**/UserInterfaceState.xcuserstate
+*.xcuserstate
+*.xcworkspacedata
+*.xcbkptlist
