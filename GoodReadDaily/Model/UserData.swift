@@ -9,5 +9,6 @@ struct UserData: Codable {
     var completedArticleIDs: [String]
     var inProgressArticleIDs: [String]
     var savedWords: [DictionaryEntry]
+    var todaysArticles: [Article] = []
     var preferences: UserPreferences
 }

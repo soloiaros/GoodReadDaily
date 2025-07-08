@@ -63,16 +63,22 @@ class GenreSelectionViewController: UIViewController {
         sender.isSelected.toggle()
         guard let genre = sender.title(for: .normal) else { return }
         if sender.isSelected {
-            selectedGenres.insert(genre)
+            selectedGenres.insert(genre.lowercased())
         } else {
-            selectedGenres.remove(genre)
+            selectedGenres.remove(genre.lowercased())
         }
     }
 
     @objc func finishOnboarding() {
         var userData = UserDataManager.shared.userData
+        print(Array(selectedGenres))
         userData.preferences.genres = Array(selectedGenres)
         userData.preferences.hasSeenGenreScreen = true
+        UserDataManager.shared.userData = userData
+        UserDataManager.shared.save()
+        
+        let todaysArticles = ArticleManager.getRandomArticles(for: Array(selectedGenres), count: 3)
+        userData.todaysArticles = todaysArticles
         UserDataManager.shared.userData = userData
         UserDataManager.shared.save()
 

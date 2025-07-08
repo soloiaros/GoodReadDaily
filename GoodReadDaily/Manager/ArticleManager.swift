@@ -17,4 +17,18 @@ class ArticleManager {
         }
         return articles
     }
+    
+    static func getRandomArticles(for genres: [String], count: Int) -> [Article] {
+        let allArticles = loadArticles()
+        let filteredArticles = allArticles.filter {
+            article in
+            genres.contains(article.genre)
+        }
+        
+        if filteredArticles.count <= count {
+            return filteredArticles.shuffled()
+        }
+        
+        return Array(filteredArticles.shuffled().prefix(count))
+    }
 }

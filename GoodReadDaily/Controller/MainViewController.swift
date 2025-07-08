@@ -37,7 +37,6 @@ class MainViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        print(navigationController != nil)
         title = "GoodReadDaily"
         view.backgroundColor = .white
         setupLayout()
@@ -93,7 +92,6 @@ class MainViewController: UIViewController {
             let appDomain = Bundle.main.bundleIdentifier!
             UserDefaults.standard.removePersistentDomain(forName: appDomain)
             UserDefaults.standard.synchronize()
-            print(UserDefaults.standard.dictionaryRepresentation())
             
             let loginVC = LoginViewController()
             let navVC = UINavigationController(rootViewController: loginVC)
