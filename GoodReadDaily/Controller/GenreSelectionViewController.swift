@@ -8,19 +8,42 @@
 import UIKit
 
 class GenreSelectionViewController: UIViewController {
-    let genres = ["Science", "Technology", "Fashion", "Politics"]
-    var selectedGenres = Set<String>()
+    let genres = ["Science", "Technology", "Fashion", "History", "Architecture", "Celebrities", "Travel", "Food", "Art", "Literature"]
+    var selectedGenres = Set<String>() {
+        didSet {
+            updateCounterLabel()
+        }
+    }
     
     let doneButton = UIButton(type: .system)
     let genreButtons: [GenreSelectButton] = []
-
+    let maxGenreSelection = 5
+    var counterLabel: UILabel!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .white
         title = "Choose Your Genres"
+        setupNavigationCounter()
         setupUI()
     }
-
+    
+    func setupNavigationCounter() {
+        counterLabel = UILabel()
+        counterLabel.font = UIFont.systemFont(ofSize: 14, weight: .medium)
+        counterLabel.textColor = .secondaryLabel
+        updateCounterLabel()
+        
+        let counterItem = UIBarButtonItem(customView: counterLabel)
+        navigationItem.rightBarButtonItem = counterItem
+    }
+    
+    func updateCounterLabel() {
+        let remaining = maxGenreSelection - selectedGenres.count
+        counterLabel.text = "Choose \(remaining) more \(remaining == 1 ? "genre" : "genres")!"
+        counterLabel.sizeToFit()
+    }
+    
     func setupUI() {
         let stack = UIStackView()
         stack.axis = .vertical
@@ -28,23 +51,22 @@ class GenreSelectionViewController: UIViewController {
         stack.translatesAutoresizingMaskIntoConstraints = false
         
         for genre in genres {
-            let button = UIButton(type: .system)
+            let button = GenreSelectButton(title: genre)
+            button.tag = genres.firstIndex(of: genre)!
+            button.addTarget(self, action: #selector(toggleGenre(_:)), for: .touchUpInside)
             button.setTitle(genre, for: .normal)
             button.tag = genres.firstIndex(of: genre)!
             button.addTarget(self, action: #selector(toggleGenre(_:)), for: .touchUpInside)
             stack.addArrangedSubview(button)
         }
-
+        
         doneButton.setTitle("Continue", for: .normal)
         doneButton.addTarget(self, action: #selector(finishOnboarding), for: .touchUpInside)
         doneButton.translatesAutoresizingMaskIntoConstraints = false
         
-        view.addSubview(stack)
-        view.addSubview(doneButton)
-        
-        doneButton.translatesAutoresizingMaskIntoConstraints = false
-        doneButton.topAnchor.constraint(equalTo: stack.bottomAnchor, constant: 20).isActive = true
-        doneButton.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
+//        doneButton.translatesAutoresizingMaskIntoConstraints = false
+//        doneButton.topAnchor.constraint(equalTo: stack.bottomAnchor, constant: 20).isActive = true
+//        doneButton.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
         
         view.addSubview(stack)
         view.addSubview(doneButton)
@@ -53,23 +75,46 @@ class GenreSelectionViewController: UIViewController {
             stack.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             stack.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 40),
             stack.widthAnchor.constraint(equalToConstant: 280),
-
+            
             doneButton.topAnchor.constraint(equalTo: stack.bottomAnchor, constant: 30),
             doneButton.centerXAnchor.constraint(equalTo: view.centerXAnchor)
         ])
     }
-
+    
     @objc func toggleGenre(_ sender: GenreSelectButton) {
-        sender.isSelected.toggle()
         guard let genre = sender.title(for: .normal) else { return }
+        
         if sender.isSelected {
-            selectedGenres.insert(genre.lowercased())
-        } else {
             selectedGenres.remove(genre.lowercased())
+            sender.isSelected = false
+        } else {
+            if selectedGenres.count < maxGenreSelection {
+                selectedGenres.insert(genre.lowercased())
+                sender.isSelected = true
+            } else {
+                // Show feedback that maximum reached
+                let alert = UIAlertController(
+                    title: "Maximum Reached",
+                    message: "You can select up to \(maxGenreSelection) genres.",
+                    preferredStyle: .alert
+                )
+                alert.addAction(UIAlertAction(title: "OK", style: .default))
+                present(alert, animated: true)
+            }
         }
     }
-
+    
     @objc func finishOnboarding() {
+        guard !selectedGenres.isEmpty else {
+            showValidationAlert(message: "Please select at least one to continue.")
+            return
+        }
+        
+        guard selectedGenres.count <= maxGenreSelection else {
+            showValidationAlert(message: "You can only select \(maxGenreSelection) genres.")
+            return
+        }
+        
         var userData = UserDataManager.shared.userData
         userData.preferences.genres = Array(selectedGenres)
         userData.preferences.hasSeenGenreScreen = true
@@ -81,16 +126,26 @@ class GenreSelectionViewController: UIViewController {
         userData.todaysArticles = todaysArticles  // maybe delete from here <-
         UserDataManager.shared.userData = userData
         UserDataManager.shared.save() //to here <-
-
+        
         let mainVC = MainViewController()
         let navController = UINavigationController(rootViewController: mainVC)
         guard let window = view.window ?? UIApplication.shared.connectedScenes
-                .compactMap({ $0 as? UIWindowScene })
-                .first?.windows.first else { return }
-
-            UIView.transition(with: window, duration: 0.3, options: .transitionCrossDissolve, animations: {
-                window.rootViewController = navController
-            }, completion: nil)
+            .compactMap({ $0 as? UIWindowScene })
+            .first?.windows.first else { return }
+        
+        UIView.transition(with: window, duration: 0.3, options: .transitionCrossDissolve, animations: {
+            window.rootViewController = navController
+        }, completion: nil)
+    }
+    
+    private func showValidationAlert(message: String) {
+        let alert = UIAlertController(
+            title: "Selection required",
+            message: message,
+            preferredStyle: .alert
+        )
+        alert.addAction(UIAlertAction(title: "OK", style: .default))
+        present(alert, animated: true)
     }
 }
 
