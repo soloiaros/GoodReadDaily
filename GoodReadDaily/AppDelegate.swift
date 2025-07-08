@@ -1,7 +1,6 @@
 //
 //  AppDelegate.swift
 //  GoodReadDaily
-//
 //  Created by Yaroslav Solovev on 7/4/25.
 //
 
