@@ -37,6 +37,7 @@ class MainViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        print(navigationController != nil)
         title = "GoodReadDaily"
         view.backgroundColor = .white
         setupLayout()

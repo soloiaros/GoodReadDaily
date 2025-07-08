@@ -77,8 +77,14 @@ class GenreSelectionViewController: UIViewController {
         UserDataManager.shared.save()
 
         let mainVC = MainViewController()
-        mainVC.modalPresentationStyle = .fullScreen
-        self.present(mainVC, animated: true)
+        let navController = UINavigationController(rootViewController: mainVC)
+        guard let window = view.window ?? UIApplication.shared.connectedScenes
+                .compactMap({ $0 as? UIWindowScene })
+                .first?.windows.first else { return }
+
+            UIView.transition(with: window, duration: 0.3, options: .transitionCrossDissolve, animations: {
+                window.rootViewController = navController
+            }, completion: nil)
     }
 }
 
