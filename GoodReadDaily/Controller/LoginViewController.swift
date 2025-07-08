@@ -76,17 +76,23 @@ class LoginViewController: UIViewController {
     }
 
     func routeAfterLogin() {
+        UserDataManager.shared.reset()
+
         let prefs = UserDataManager.shared.userData.preferences
         if prefs.hasSeenGenreScreen {
             let mainVC = MainViewController()
-            mainVC.modalPresentationStyle = .fullScreen
-            self.present(mainVC, animated: true)
+            let nav = UINavigationController(rootViewController: mainVC)
+            nav.modalPresentationStyle = .fullScreen
+            present(nav, animated: true)
         } else {
             let genreVC = GenreSelectionViewController()
-            genreVC.modalPresentationStyle = .fullScreen
-            self.present(genreVC, animated: true)
+            let nav = UINavigationController(rootViewController: genreVC)
+            nav.modalPresentationStyle = .fullScreen
+            present(nav, animated: true)
         }
     }
+
+
     
     func showError(_ error: Error) {
         let alert = UIAlertController(title: "Error", message: error.localizedDescription, preferredStyle: .alert)

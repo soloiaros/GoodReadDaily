@@ -62,22 +62,25 @@ class MainViewController: UIViewController {
 
     private func setupActions() {
         todaysFeedButton.addTarget(self, action: #selector(openTodaysFeed), for: .touchUpInside)
-        inProcessButton.addTarget(self, action: #selector(openInProgress), for: .touchUpInside)
+        inProcessButton.addTarget(self, action: #selector(openInProcess), for: .touchUpInside)
         dictionaryButton.addTarget(self, action: #selector(openDictionary), for: .touchUpInside)
         logoutButton.addTarget(self, action: #selector(handleLogout), for: .touchUpInside)
     }
 
     @objc private func openTodaysFeed() {
+        print("Feed btn")
         let vc = TodaysFeedViewController()
         navigationController?.pushViewController(vc, animated: true)
     }
 
-    @objc private func openInProgress() {
+    @objc private func openInProcess() {
+        print("process btn")
         let vc = InProcessViewController()
         navigationController?.pushViewController(vc, animated: true)
     }
 
     @objc private func openDictionary() {
+        print("Dictionary btn")
         let vc = DictionaryViewController()
         navigationController?.pushViewController(vc, animated: true)
     }
@@ -85,8 +88,15 @@ class MainViewController: UIViewController {
     @objc private func handleLogout() {
         do {
             try Auth.auth().signOut()
+            
+            let appDomain = Bundle.main.bundleIdentifier!
+            UserDefaults.standard.removePersistentDomain(forName: appDomain)
+            UserDefaults.standard.synchronize()
+            print(UserDefaults.standard.dictionaryRepresentation())
+            
             let loginVC = LoginViewController()
             let navVC = UINavigationController(rootViewController: loginVC)
+            
             if let sceneDelegate = UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate {
                 sceneDelegate.window?.rootViewController = navVC
             }
@@ -96,11 +106,12 @@ class MainViewController: UIViewController {
     }
 }
 
-class MainWidgetButton: UIButton {
+class MainWidgetButton: UIControl {
     
     private let titleLabelView = UILabel()
     private let subtitleLabelView = UILabel()
-    
+    private let contentStack = UIStackView()
+
     init(title: String, subtitle: String, isLarge: Bool = false) {
         super.init(frame: .zero)
         setupUI(title: title, subtitle: subtitle, isLarge: isLarge)
@@ -111,32 +122,45 @@ class MainWidgetButton: UIButton {
     }
 
     private func setupUI(title: String, subtitle: String, isLarge: Bool) {
-        translatesAutoresizingMaskIntoConstraints = false
         backgroundColor = UIColor.systemBrown.withAlphaComponent(0.1)
         layer.cornerRadius = 12
-        clipsToBounds = true
+        translatesAutoresizingMaskIntoConstraints = false
         
-        isUserInteractionEnabled = true
-        
+        // Title
         titleLabelView.text = title
         titleLabelView.font = UIFont.systemFont(ofSize: isLarge ? 22 : 18, weight: .bold)
+        titleLabelView.textColor = .label
+        titleLabelView.numberOfLines = 0
+        titleLabelView.isUserInteractionEnabled = false // Add this
         
+        // Subtitle
         subtitleLabelView.text = subtitle
         subtitleLabelView.font = UIFont.systemFont(ofSize: isLarge ? 16 : 14)
         subtitleLabelView.textColor = .darkGray
+        subtitleLabelView.numberOfLines = 0
+        subtitleLabelView.isUserInteractionEnabled = false // Add this
         
-        let stack = UIStackView(arrangedSubviews: [titleLabelView, subtitleLabelView])
-        stack.axis = .vertical
-        stack.spacing = 6
-        stack.translatesAutoresizingMaskIntoConstraints = false
+        // Stack
+        contentStack.axis = .vertical
+        contentStack.spacing = 6
+        contentStack.translatesAutoresizingMaskIntoConstraints = false
+        contentStack.isUserInteractionEnabled = false // Add this
+        contentStack.addArrangedSubview(titleLabelView)
+        contentStack.addArrangedSubview(subtitleLabelView)
         
-        addSubview(stack)
-
+        addSubview(contentStack)
+        
         NSLayoutConstraint.activate([
             heightAnchor.constraint(equalToConstant: isLarge ? 120 : 80),
-            stack.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 16),
-            stack.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -16),
-            stack.centerYAnchor.constraint(equalTo: centerYAnchor)
+            contentStack.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 16),
+            contentStack.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -16),
+            contentStack.centerYAnchor.constraint(equalTo: centerYAnchor)
         ])
+    }
+
+    override var isHighlighted: Bool {
+        didSet {
+            alpha = isHighlighted ? 0.5 : 1.0
+        }
     }
 }

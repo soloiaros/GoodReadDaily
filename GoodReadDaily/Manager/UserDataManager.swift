@@ -6,6 +6,8 @@
 //
 
 import Foundation
+import FirebaseDatabase
+import FirebaseAuth
 
 class UserDataManager {
     static let shared = UserDataManager()
@@ -32,6 +34,18 @@ class UserDataManager {
         if let encoded = try? JSONEncoder().encode(userData) {
             UserDefaults.standard.set(encoded, forKey: userDataKey)
         }
+    }
+    
+    func reset() {
+        self.userData = UserData(
+            completedArticleIDs: [],
+            inProgressArticleIDs: [],
+            savedWords: [],
+            preferences: UserPreferences(genres: [], hasSeenGenreScreen: false)
+        )
+
+        UserDefaults.standard.removeObject(forKey: userDataKey)
+        UserDefaults.standard.synchronize()
     }
 }
 

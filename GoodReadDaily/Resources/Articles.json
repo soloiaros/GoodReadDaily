@@ -8,4 +8,274 @@
         "content": "Earth may have had fresh, not just salty, water less than 600 million years after the planet formed — a mere blink of an eye in geologic time. Researchers analyzed oxygen molecules within 4-billion-year-old zircon crystals from Western Australia’s Jack Hills, one of the oldest rock formations on Earth. The relative proportions of oxygen’s heaviest and lightest forms, or isotopes, in the zircons are possible only if there had been a significant amount of freshwater present, geochemist Hamed Gamaleldien of Khalifa University in Abu Dhabi, United Arab Emirates, and colleagues report June 3 in Nature Geoscience. The finding suggests that freshwater may have been actively cycling on Earth hundreds of millions of years earlier than previously thought. Past studies have found evidence that a robust water cycle, one that involved rain and evaporation from the land back to the atmosphere and then rain again, existed by at least 3.2 billion years ago. The presence of freshwater has implications for Earth’s habitability 4 billion years ago. It doesn’t necessarily mean life was present, Gamaleldien says, “but at least we have the main ingredient to form life.” Currently, the oldest agreed-upon evidence for life on Earth comes from fossilized microbial mats in Australia’s Strelley Pool Chert that date to 3.4 billion years ago. Cycles of evaporation and rain alter the chemical makeup of water molecules. When water evaporates from the ocean’s surface, leaving the salt behind, the lighter form of oxygen, oxygen-16, tends to evaporate faster than the heavier oxygen-18. That lighter water may then rain out over land, and perhaps evaporate again. Over time, the freshwater becomes more concentrated in oxygen-16 compared with the original seawater. When that rainwater percolates through the ground, it can chemically react with bedrock or with magma pockets in the rock, imparting lighter isotopic oxygen values — clues that freshwater was present. The team analyzed oxygen isotopic ratios of over 1,300 zircon crystals ranging in age from 4.2 billion to 3.3 billion years ago. Most of the zircons had relatively heavy oxygen isotopic values, as would be expected from seawater. At around 3.4 billion years ago and 4 billion years ago, the ratios indicated a greater proportion of lighter oxygen. In the 3.4-billion-year-old zircons, the team measured ratios of oxygen-18 to oxygen-16 that were as low as 0.1 per mil — a measurement of the ratio of those isotopes when compared with a standard oxygen isotopic ratio from ocean water. That value is very low compared with the average for rocks at that time, about 5 per mil. The 4-billion-year-old zircons had oxygen isotopic values that were about 2 per mil. The team ran thousands of computer simulations to determine the likelihood of different explanations for the observed ratios. “We concluded that the main water on Earth was oceanic,” Gamaleldien says. “But only when we used freshwater [did] it create the results we see.” Gamaleldien’s team presents a convincing case that there was freshwater cycling on Earth 3.4 billion years ago, but the jury is still out on whether that was the case 4 billion years ago, says geochemist Jesse Reimink of Penn State. “The early Earth is really difficult [to study] because there are so few data points,” Reimink says. Ancient crystals like these remain the only clues scientists have to Earth’s earliest time, he adds. “We need to keep pushing the limits of these zircon grains.”",
         "dateAdded": "2025-07-01T10:00:00Z"
     },
+    {
+        "id": "article_2",
+        "title": "Earth's soil is drying up. It could be irreversible.",
+        "subtitle": "Widespread soil moisture loss may reshape global hydrology",
+        "author": "The Washington Post",
+        "genre": "science",
+        "content": "A study in *Science* finds that from 1979 to 2016, Earth lost around 1,614 Gt of soil moisture and another 1,287 Gt from 2005–2015, contributing to sea-level rise and potential long-term drying driven by human-caused climate change…",
+        "dateAdded": "2025-03-27T18:00:00Z"
+      },
+      {
+        "id": "article_3",
+        "title": "We may be able to trap climate pollution in ordinary rocks",
+        "subtitle": "Accelerating rock weathering may offer low-cost carbon capture",
+        "author": "Dino Grandoni / The Washington Post",
+        "genre": "science",
+        "content": "Researchers demonstrate a method using olivine and limestone heated to form mineral phases that rapidly sequester CO₂ in ocean‑depth rock layers—potentially speeding nature’s slow carbon storage process by centuries to millennia…",
+        "dateAdded": "2025-02-19T00:00:00Z"
+      },
+      {
+        "id": "article_4",
+        "title": "These common medications could be releasing ‘forever chemicals’ into the environment",
+        "subtitle": "Pharmaceutical PFAS enter wastewater and drinking water",
+        "author": "Amudalat Ajasa / The Washington Post",
+        "genre": "science",
+        "content": "A PNAS study reveals that up to 75% of extractable organofluorines in wastewater plants come from 12 common drugs, and that treatment removes less than 25%, raising concerns about PFAS in reused water during drought…",
+        "dateAdded": "2025-01-06T00:00:00Z"
+      },
+      {
+        "id": "article_5",
+        "title": "Scientists have captured Earth’s climate over the last 485 million years",
+        "subtitle": "A deep‑time climate record warns of human‑driven warming",
+        "author": "Sarah Kaplan & Simon Ducroquet / The Washington Post",
+        "genre": "science",
+        "content": "By combining 150,000 fossil records with climate models, the study in *Science* reconstructed Earth's global surface temperature trends since 485 Ma, revealing that modern warming is unprecedented in rate—not just magnitude—compared to deep‑time shifts…",
+        "dateAdded": "2024-09-19T00:00:00Z"
+      },
+      {
+        "id": "article_6",
+        "title": "The lost continent of Zealandia has been mapped for the first time",
+        "subtitle": "Submerged Zealandia finally charted in full extent",
+        "author": "Liz Kruesi / National Geographic",
+        "genre": "science",
+        "content": "New research in *Tectonics* completed a full mapping of Zealandia—1.9 million sq mi of mostly submerged continental crust—using rock samples and magnetic data, rewriting geological history in the South Pacific…",
+        "dateAdded": "2024-01-24T00:00:00Z"
+      },
+      {
+        "id": "article_7",
+        "title": "4‑Billion‑Year‑Old Crystals Offer Clues to the Origins of Life",
+        "subtitle": "Zircon grains reveal early water and habitability",
+        "author": "Maya Wei‑Haas / National Geographic",
+        "genre": "science",
+        "content": "Zircons nearly 4.4 billion years old retain chemical signatures suggesting early surface water and crustal processes, offering windows into Hadean conditions that may have supported prebiotic chemistry…",
+        "dateAdded": "2018-09-24T00:00:00Z"
+      },
+      {
+        "id": "article_8",
+        "title": "Origin of water on Earth dates back to 4.404 billion years ago",
+        "subtitle": "Zircon evidence pushes earliest oceans back to planet’s infancy",
+        "author": "Wikipedia contributors",
+        "genre": "science",
+        "content": "Mineralogical studies of zircon crystals indicate liquid water and an atmosphere existed as early as 4.404 ± 0.008 Ga, implying oceans formed shortly after Earth’s accretion—a rapid hydration of the planet…",
+        "dateAdded": "2025-07-05T00:00:00Z"
+      },
+      {
+        "id": "article_9",
+        "title": "Hadean zircons show early hydrosphere and crust interaction",
+        "subtitle": "Isotopic signals hint at plate-like processes 4.5 Ga ago",
+        "author": "Wikipedia contributors",
+        "genre": "science",
+        "content": "Research on Hadean‑aged Jack Hills zircons finds low crystallization temperatures and heavy‑oxygen enrichment, consistent with early felsic crust formation and weathering under water, hinting at proto‑plate tectonics…",
+        "dateAdded": "2025-05-01T00:00:00Z"
+      },
+      {
+        "id": "article_10",
+        "title": "Effects of climate change on the water cycle",
+        "subtitle": "Warming amplifies extremes and destabilizes hydrology",
+        "author": "Wikipedia contributors",
+        "genre": "science",
+        "content": "Since mid‑20th century, human‑driven warming has increased land precipitation and atmospheric humidity, but also intensified droughts and floods. WMO reports 2023 saw record‑low river levels and glacier mass loss—signs of a destabilized water cycle…",
+        "dateAdded": "2025-06-25T00:00:00Z"
+      },
+      {
+        "id": "article_11",
+        "title": "Hydrologic cycle weakening in hothouse climates",
+        "subtitle": "Models predict reversed precipitation trends at extreme heat",
+        "author": "Jiachen Liu et al. (arXiv preprint)",
+        "genre": "science",
+        "content": "Climate models show that precipitation increases with rising temperature until ~320 K, after which the hydrologic cycle weakens. This non‑monotonic behavior could have implications for exoplanets and future extreme warming scenarios…",
+        "dateAdded": "2024-05-03T00:00:00Z"
+      },
+      {
+          "id": "article_12",
+          "title": "Lenovo’s rollable laptop is coming to market for $3,500",
+          "subtitle": "ThinkBook Plus Gen 6 turns a 14‑inch OLED into a 16.7‑inch screen at the push of a button",
+          "author": "Cameron Faulkner",
+          "genre": "technology",
+          "content": "Shown at CES 2025, Lenovo’s rollable ThinkBook Plus Gen 6 will ship later this quarter. Tiny motors unspool a flexible OLED panel that expands the display, but Windows still lacks native support for the extra pixels, so Lenovo ships helper software to manage windows. Specs include an Intel Core Ultra 7, 32 GB of RAM and a 1 TB SSD, but just two Thunderbolt 4 ports and a headphone jack.",
+          "dateAdded": "2025-01-07T09:00:00Z"
+        },
+        {
+          "id": "article_13",
+          "title": "Continue lets devs build their own AI coding buddies",
+          "subtitle": "Open‑source VS Code / JetBrains extension hits 1.0 and lands $3 M seed round",
+          "author": "Paul Sawers",
+          "genre": "technology",
+          "content": "YC‑backed startup Continue launched version 1.0 of its open‑source coding‑assistant hub and raised new funding. Developers can wire any model into the extension, add Jira or Confluence context and publish custom assistants to a registry — an open alternative to proprietary tools like Copilot.",
+          "dateAdded": "2025-02-26T16:00:00Z"
+        },
+        {
+          "id": "article_14",
+          "title": "Lenovo ThinkPad X1 Fold 16 review",
+          "subtitle": "A bigger, brighter foldable PC fixes past flaws but costs nearly $3 K",
+          "author": "Monica Chin",
+          "genre": "technology",
+          "content": "Lenovo’s second‑gen foldable doubles battery life and screen size, adds roaring speakers and sturdier hinges, yet still omits the keyboard and folio stand from the $2,948 base price. Trackpad quirks and a cramped clamshell mode keep it niche.",
+          "dateAdded": "2024-09-12T12:00:00Z"
+        },
+        {
+          "id": "article_15",
+          "title": "Even Apple couldn’t make VR mainstream in 2024",
+          "subtitle": "Vision Pro’s $3,499 price and limited apps leave room for cheaper AR glasses",
+          "author": "Emma Roth",
+          "genre": "technology",
+          "content": "Apple’s polished Vision Pro found fans among early adopters but failed to break out, prompting Apple to cut production and shift focus to a lower‑cost model. Meta’s sub‑$500 Quest line still dominates while Ray‑Ban Meta glasses hint that lightweight AR may win the race.",
+          "dateAdded": "2025-01-07T08:00:00Z"
+        },
+        {
+          "id": "article_16",
+          "title": "The year everyone remembered that chips matter",
+          "subtitle": "Semiconductors reclaimed the spotlight as AI, EVs and geopolitics converged",
+          "author": "Will Knight",
+          "genre": "technology",
+          "content": "Wired argues that 2024’s real tech star wasn’t the metaverse or blockchain but plain old silicon. Supply shocks, AI accelerator wars and trillion‑dollar fab subsidies reminded the industry that progress still flows through smaller, faster transistors.",
+          "dateAdded": "2025-01-05T10:00:00Z"
+        },
+        {
+          "id": "article_17",
+          "title": "Helion raises $425 M to build Microsoft’s first fusion reactor",
+          "subtitle": "Series F values the startup at $5.2 B ahead of an ambitious 2028 power‑on goal",
+          "author": "Tim De Chant",
+          "genre": "technology",
+          "content": "Fusion hopeful Helion flipped the switch on its Polaris prototype and pulled in new capital to move specialized semiconductor manufacturing in‑house. The company’s field‑reversed configuration aims to deliver electricity to Microsoft by 2028.",
+          "dateAdded": "2025-01-28T12:00:00Z"
+        },
+        {
+          "id": "article_18",
+          "title": "Holograms come to the office",
+          "subtitle": "WeWork, Google and Microsoft pilot 3‑D telepresence for hybrid work",
+          "author": "SoFi Editorial Team",
+          "genre": "technology",
+          "content": "ARHT Media kiosks are rolling out to 100 WeWork locations, while Google’s Project Starline and Microsoft Mesh test life‑size 3‑D calls. Early use cases favor recorded events and concierge services over live meetings as the tech matures.",
+          "dateAdded": "2025-04-15T14:00:00Z"
+        },
+        {
+          "id": "article_19",
+          "title": "Inside New Balance’s plans to topple the sneaker hierarchy",
+          "subtitle": "The once‑dad‑only 990 is now hype fuel",
+          "author": "Sam Schube",
+          "genre": "fashion",
+          "content": "GQ tours New Balance’s Massachusetts factory and ‘smash lab’ to see how updated foams and a renewed basketball push doubled revenue to $5 B. Marketing chief Chris Davis bets refreshed classics and US manufacturing can vault the brand to No. 3 globally.",
+          "dateAdded": "2024-10-10T10:00:00Z"
+        },
+        {
+          "id": "article_20",
+          "title": "Adidas’s superstar designers finally teamed up",
+          "subtitle": "Y‑3, Wales Bonner and Willy Chavarria unite at Paris Fashion Week",
+          "author": "Reed Nelson",
+          "genre": "fashion",
+          "content": "At Paris SS 26, Yohji Yamamoto re‑imagined ’90s EQT gear, Grace Wales Bonner wrapped F50 cleats in python and Willy Chavarria pin‑striped a tracksuit. Their joint show underscored Adidas’s strategy of long‑term, curator‑driven collaborations.",
+          "dateAdded": "2025-07-04T09:00:00Z"
+        },
+        {
+          "id": "article_21",
+          "title": "The best sneakers of 2025 (so far)",
+          "subtitle": "Supreme Air Max 1, Prada Collapse and more headline a crowded year",
+          "author": "GQ Staff",
+          "genre": "fashion",
+          "content": "From Supreme’s leather Air Max 1 to Nigel Sylvester’s brick‑red Jordan 4, GQ’s running list spotlights 2025’s standout drops, including Union’s third AJ1 and Balenciaga‑Puma Speedcat.",
+          "dateAdded": "2025-03-15T12:00:00Z"
+        },
+        {
+          "id": "article_22",
+          "title": "What’s fashion’s next big idea?",
+          "subtitle": "Industry forecasters predict an ‘avalanche of individual glimmers’ over mass trends",
+          "author": "Vogue Business Editors",
+          "genre": "fashion",
+          "content": "Analysts argue that craft, quality and personal style will eclipse disposable novelty. Designers are chasing intentional, deeply worked concepts instead of algorithm‑driven sameness.",
+          "dateAdded": "2025-06-18T11:00:00Z"
+        },
+        {
+          "id": "article_23",
+          "title": "Dua Lipa nails easy‑breezy Parisian dressing",
+          "subtitle": "Singer embodies French‑girl chic ahead of couture week",
+          "author": "Alice Cary",
+          "genre": "fashion",
+          "content": "Jeans, a striped shirt and a gold Chanel 2.55 bag proved that effortless styling — plus stops at Chez Janou and Schiaparelli’s atelier — can upstage runway fanfare.",
+          "dateAdded": "2025-07-07T08:00:00Z"
+        },
+        {
+          "id": "article_24",
+          "title": "BeyHive couture at Beyoncé’s ‘Cowboy Carter’ homecoming",
+          "subtitle": "Fans fuse western wear and high fashion at Houston shows",
+          "author": "Megan O’Neill",
+          "genre": "fashion",
+          "content": "Texas‑sized mums, python boots and custom Stella McCartney pieces turned NRG Stadium into a two‑night street‑style spectacle celebrating Pride and Beyoncé’s latest era.",
+          "dateAdded": "2025-07-01T08:00:00Z"
+        },
+        {
+          "id": "article_25",
+          "title": "2025 in fashion‑tech: more human, more automated",
+          "subtitle": "Generative AI powers try‑ons while shoppers crave tangible experiences",
+          "author": "Marc Bain",
+          "genre": "fashion",
+          "content": "Vogue Business sees brands shifting budget from metaverse experiments to AI that shortens size searches, prototypes styles and predicts demand — marrying digital convenience with craft.",
+          "dateAdded": "2025-01-07T09:00:00Z"
+        },
+        {
+          "id": "article_26",
+          "title": "‘100‑year find’: Viking ship rewrites burial rituals",
+          "subtitle": "Gjellestad excavation reveals robbed chamber still rich with clues",
+          "author": "Franz Lidz",
+          "genre": "history",
+          "content": "Archaeologists mapping the 22‑meter ship found beads, ox bones and tunnel evidence hinting that Harald Bluetooth’s men looted high‑status graves around 950 CE, yet amber and glass survived to tell the tale.",
+          "dateAdded": "2025-05-10T10:00:00Z"
+        },
+        {
+          "id": "article_27",
+          "title": "Stunning Assyrian art survives ISIS and 2,600 years underground",
+          "subtitle": "Reliefs at Nineveh’s Mashki Gate show Sennacherib’s armies in vivid detail",
+          "author": "Kristin Romey",
+          "genre": "history",
+          "content": "Panels buried beneath a palace floor escaped both Babylonian sack and modern militants. Their high‑relief carving is so crisp that scholars call them better than the British Museum’s collection.",
+          "dateAdded": "2025-05-15T09:00:00Z"
+        },
+        {
+          "id": "article_28",
+          "title": "Lost cities of the Amazon revealed by LiDAR",
+          "subtitle": "Laser mapping uncovers ‘garden towns’ linked by 50‑mile road grids",
+          "author": "Mac Margolis",
+          "genre": "history",
+          "content": "New scans expose densely settled urban landscapes with terra preta soils, fisheries and orchards, overturning the myth of a pristine, sparsely peopled rainforest.",
+          "dateAdded": "2025-02-06T13:00:00Z"
+        },
+        {
+          "id": "article_29",
+          "title": "4,000‑year‑old tablets show Sumerian bureaucracy in action",
+          "subtitle": "Finds from Iraq track textiles, taxes and temple rations",
+          "author": "Livia Gershon",
+          "genre": "history",
+          "content": "Cuneiform texts excavated with the British Museum reveal that meticulous record‑keeping — not epic poetry — consumed most scribes, detailing everything from wool allotments to beer quotas.",
+          "dateAdded": "2025-03-19T10:00:00Z"
+        },
+        {
+          "id": "article_30",
+          "title": "Roman basilica unearthed beneath London’s financial district",
+          "subtitle": "80 CE civic hall testifies to Londinium’s rapid post‑revolt rebound",
+          "author": "WGBH News Staff",
+          "genre": "history",
+          "content": "Archaeologists found a 40‑foot‑tall basilica while preparing a skyscraper site. Its scale — built just after Boudicca’s revolt — signals a vote of confidence in the city’s future.",
+          "dateAdded": "2025-02-18T11:00:00Z"
+        },
+        {
+          "id": "article_31",
+          "title": "AI joins the quest to crack the Indus script",
+          "subtitle": "Pattern‑spotting algorithms offer hope for a 4,000‑year‑old mystery",
+          "author": "TOI Science Desk",
+          "genre": "history",
+          "content": "Short inscriptions have stymied scholars for a century, but a new million‑dollar prize and machine‑learning tools are renewing efforts to detect grammar‑like structures in the enigmatic symbols.",
+          "dateAdded": "2025-02-11T08:00:00Z"
+        },
 ]

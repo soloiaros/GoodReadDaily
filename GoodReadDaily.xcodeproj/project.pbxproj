@@ -10,6 +10,7 @@
 		2045BBB32E1B45300003031A /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = 2045BBB22E1B45300003031A /* FirebaseAuth */; };
 		2045BBB52E1B45300003031A /* FirebaseCore in Frameworks */ = {isa = PBXBuildFile; productRef = 2045BBB42E1B45300003031A /* FirebaseCore */; };
 		2045BBB72E1B45300003031A /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = 2045BBB62E1B45300003031A /* FirebaseFirestore */; };
+		20926D942E1C574E0016DBDC /* FirebaseDatabase in Frameworks */ = {isa = PBXBuildFile; productRef = 20926D932E1C574E0016DBDC /* FirebaseDatabase */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -21,7 +22,6 @@
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Info.plist,
-				Untitled.swift,
 			);
 			target = 2045BB292E1863040003031A /* GoodReadDaily */;
 		};
@@ -45,6 +45,7 @@
 			files = (
 				2045BBB52E1B45300003031A /* FirebaseCore in Frameworks */,
 				2045BBB32E1B45300003031A /* FirebaseAuth in Frameworks */,
+				20926D942E1C574E0016DBDC /* FirebaseDatabase in Frameworks */,
 				2045BBB72E1B45300003031A /* FirebaseFirestore in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -91,6 +92,7 @@
 				2045BBB22E1B45300003031A /* FirebaseAuth */,
 				2045BBB42E1B45300003031A /* FirebaseCore */,
 				2045BBB62E1B45300003031A /* FirebaseFirestore */,
+				20926D932E1C574E0016DBDC /* FirebaseDatabase */,
 			);
 			productName = GoodReadDaily;
 			productReference = 2045BB2A2E1863040003031A /* GoodReadDaily.app */;
@@ -376,6 +378,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 2045BBB12E1B45300003031A /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
 			productName = FirebaseFirestore;
+		};
+		20926D932E1C574E0016DBDC /* FirebaseDatabase */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 2045BBB12E1B45300003031A /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseDatabase;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
