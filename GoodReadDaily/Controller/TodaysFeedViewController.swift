@@ -105,8 +105,16 @@ extension TodaysFeedViewController: UITableViewDataSource {
             for: indexPath
         )
         let article = articles[indexPath.row]
-        cell.textLabel?.text = article.title
-        cell.detailTextLabel?.text = article.subtitle
+        var config = cell.defaultContentConfiguration()
+        config.text = article.title
+        config.secondaryText = article.subtitle
+        cell.contentConfiguration = config
+//        cell.textLabel?.text = article.title
+//        cell.textLabel?.numberOfLines = 0
+//        cell.textLabel?.lineBreakMode = .byWordWrapping
+//        cell.detailTextLabel?.text = article.subtitle
+//        cell.detailTextLabel?.numberOfLines = 0
+//        cell.detailTextLabel?.lineBreakMode = .byWordWrapping
         return cell
     }
 }
