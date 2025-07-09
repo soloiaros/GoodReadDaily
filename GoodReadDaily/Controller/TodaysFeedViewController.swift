@@ -31,7 +31,7 @@ final class TodaysFeedViewController: UIViewController {
         
         tableView.dataSource = self
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: "ArticleCell")
-        
+            
         tableView.delegate = self
     }
     
