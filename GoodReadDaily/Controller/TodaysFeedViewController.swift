@@ -31,10 +31,7 @@ final class TodaysFeedViewController: UIViewController {
         
         tableView.dataSource = self
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: "ArticleCell")
-        
-        refreshControl.addTarget(self, action: #selector(refreshArticles), for: .valueChanged)
-        tableView.refreshControl = refreshControl
-        
+            
         tableView.delegate = self
     }
     
