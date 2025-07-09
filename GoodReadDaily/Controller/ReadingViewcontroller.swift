@@ -166,18 +166,53 @@ final class ArticleViewController: UIViewController {
         let articleID = article.id
         var completedArticles = UserDataManager.shared.userData.completedArticleIDs
         
-        if let index = completedArticles.firstIndex(of: articleID) {
-            // Удаляем статью из прочитанных
-            completedArticles.remove(at: index)
+        if completedArticles.contains(articleID) {
+            // Показываем подтверждение перед удалением
+            showDeleteConfirmationAlert { [weak self] shouldDelete in
+                guard let self = self else { return }
+                
+                if shouldDelete {
+                    // Удаляем статью из прочитанных
+                    if let index = completedArticles.firstIndex(of: articleID) {
+                        completedArticles.remove(at: index)
+                        UserDataManager.shared.userData.completedArticleIDs = completedArticles
+                        UserDataManager.shared.save()
+                        
+                        // Анимация изменения состояния кнопки
+                        self.animateButtonChange()
+                    }
+                }
+            }
         } else {
-            // Добавляем статью в прочитанные
+            // Добавляем статью в прочитанные без подтверждения
             completedArticles.append(articleID)
+            UserDataManager.shared.userData.completedArticleIDs = completedArticles
+            UserDataManager.shared.save()
+            
+            // Анимация изменения состояния кнопки
+            animateButtonChange()
         }
+    }
+    
+    private func showDeleteConfirmationAlert(completion: @escaping (Bool) -> Void) {
+        let alert = UIAlertController(
+            title: "Remove from read articles?",
+            message: "Are you sure you want to remove this article from your read list?",
+            preferredStyle: .alert
+        )
         
-        UserDataManager.shared.userData.completedArticleIDs = completedArticles
-        UserDataManager.shared.save()
+        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel) { _ in
+            completion(false)
+        })
         
-        // Анимация изменения состояния кнопки
+        alert.addAction(UIAlertAction(title: "OK", style: .default) { _ in
+            completion(true)
+        })
+        
+        present(alert, animated: true)
+    }
+    
+    private func animateButtonChange() {
         UIView.animate(withDuration: 0.3, animations: {
             self.readButton.transform = CGAffineTransform(scaleX: 1.05, y: 1.05)
         }) { _ in
@@ -188,3 +223,4 @@ final class ArticleViewController: UIViewController {
         }
     }
 }
+
