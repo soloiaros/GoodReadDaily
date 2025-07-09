@@ -32,6 +32,8 @@ class InProcessViewController: UIViewController {
         articles = ArticleManager.loadArticles().filter { article in
             inProgressIDs.contains(article.id)
         }
+        articles = articles.filter { !UserDataManager.shared.userData.completedArticleIDs.contains($0.id)
+        }
         tableView.reloadData()
         
         if articles.isEmpty {
