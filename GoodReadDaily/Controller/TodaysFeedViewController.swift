@@ -31,7 +31,12 @@ final class TodaysFeedViewController: UIViewController {
         
         tableView.dataSource = self
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: "ArticleCell")
-            }
+        
+        refreshControl.addTarget(self, action: #selector(refreshArticles), for: .valueChanged)
+        tableView.refreshControl = refreshControl
+        
+        tableView.delegate = self
+    }
     
     private func loadUserArticles() {
         if ArticleStorage.shouldRefreshArticles() {
@@ -93,13 +98,15 @@ extension TodaysFeedViewController: UITableViewDataSource {
         config.text = article.title
         config.secondaryText = article.subtitle
         cell.contentConfiguration = config
-//        cell.textLabel?.text = article.title
-//        cell.textLabel?.numberOfLines = 0
-//        cell.textLabel?.lineBreakMode = .byWordWrapping
-//        cell.detailTextLabel?.text = article.subtitle
-//        cell.detailTextLabel?.numberOfLines = 0
-//        cell.detailTextLabel?.lineBreakMode = .byWordWrapping
         return cell
     }
 }
 
+extension TodaysFeedViewController: UITableViewDelegate {
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        tableView.deselectRow(at: indexPath, animated: true)
+        let selectedArticle = articles[indexPath.row]
+        let detailVC = ArticleViewController(article: selectedArticle)
+        navigationController?.pushViewController(detailVC, animated: true)
+    }
+}
