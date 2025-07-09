@@ -21,12 +21,7 @@ class UserDataManager {
            let decoded = try? JSONDecoder().decode(UserData.self, from: data) {
             self.userData = decoded
         } else {
-            self.userData = UserData(
-                completedArticleIDs: [],
-                inProgressArticleIDs: [],
-                savedWords: [],
-                preferences: UserPreferences(genres: [], hasSeenGenreScreen: false)
-            )
+            self.userData = UserData()
         }
     }
         
@@ -37,12 +32,7 @@ class UserDataManager {
     }
     
     func reset() {
-        self.userData = UserData(
-            completedArticleIDs: [],
-            inProgressArticleIDs: [],
-            savedWords: [],
-            preferences: UserPreferences(genres: [], hasSeenGenreScreen: false)
-        )
+        self.userData = UserData()
 
         UserDefaults.standard.removeObject(forKey: userDataKey)
         UserDefaults.standard.synchronize()
