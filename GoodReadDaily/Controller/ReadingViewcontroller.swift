@@ -28,6 +28,7 @@ final class ArticleViewController: UIViewController {
         view.backgroundColor = .white
         setupUI()
         configure(with: article)
+        setupReadButtonInitialState()
     }
     
     private func setupUI() {
@@ -82,17 +83,10 @@ final class ArticleViewController: UIViewController {
         contentLabel.numberOfLines = 0
         contentView.addSubview(contentLabel)
         
-        // Read Button
-        var color = UIColor.systemBlue
-        var title = "Mark as read"
-//        let articleID = article.id
-//        if !UserDataManager.shared.userData.completedArticleIDs.contains(articleID) {
-//            title = "✓ Read"
-//            color = UIColor.systemGreen
-//            return
-//        }
-        readButton.backgroundColor = color
-        readButton.setTitle(title, for: .normal)
+        //Basic Settings
+        readButton.setTitle("Mark as Read", for: .normal)
+        readButton.titleLabel?.font = UIFont.systemFont(ofSize: 18, weight: .medium)
+        readButton.backgroundColor = .systemBlue
         readButton.setTitleColor(.white, for: .normal)
         readButton.layer.cornerRadius = 8
         readButton.addTarget(self, action: #selector(readButtonTapped), for: .touchUpInside)
@@ -150,6 +144,22 @@ final class ArticleViewController: UIViewController {
         contentLabel.text = article.content
     }
     
+    private func setupReadButtonInitialState() {
+            let articleId = article.id
+            
+            if UserDataManager.shared.userData.completedArticleIDs.contains(articleId) {
+                // Статья уже прочитана - настраиваем кнопку как "прочитано"
+                readButton.setTitle("✓ Read", for: .normal)
+                readButton.backgroundColor = .systemGreen
+                readButton.isEnabled = false
+            } else {
+                // Статья нет в прочитанных - обычное состояние
+                readButton.setTitle("Mark as Read", for: .normal)
+                readButton.backgroundColor = .systemBlue
+                readButton.isEnabled = true
+            }
+        }
+    
     @objc private func readButtonTapped() {
 
         // Визуальная обратная связь
@@ -172,6 +182,7 @@ final class ArticleViewController: UIViewController {
         }
         else {
             UserDataManager.shared.userData.completedArticleIDs.append(articleID)
+            UserDataManager.shared.save()
             return
         }
         
