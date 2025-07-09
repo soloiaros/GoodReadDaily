@@ -11,8 +11,6 @@ final class TodaysFeedViewController: UIViewController {
     private var articles: [Article] = []
     private let tableView = UITableView(frame: .zero)
     
-    private let refreshControl = UIRefreshControl()
-
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .white
@@ -33,10 +31,7 @@ final class TodaysFeedViewController: UIViewController {
         
         tableView.dataSource = self
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: "ArticleCell")
-        
-        refreshControl.addTarget(self, action: #selector(refreshArticles), for: .valueChanged)
-        tableView.refreshControl = refreshControl
-    }
+            }
     
     private func loadUserArticles() {
         if ArticleStorage.shouldRefreshArticles() {
@@ -49,17 +44,6 @@ final class TodaysFeedViewController: UIViewController {
         else {
             refreshArticles()
         }
-        
-//        let genres = UserDataManager.shared.userData.preferences.genres
-//        print("User's genres: \(genres)")
-//        let loadedArticles = ArticleManager.getRandomArticles(for: genres, count: 3)
-//        articles = loadedArticles
-//        print("Loaded articles: \(articles)")
-//        tableView.reloadData()
-//        
-//        if loadedArticles.isEmpty {
-//            showEmptyState()
-//        }
     }
     
     @objc private func refreshArticles() {
@@ -70,10 +54,10 @@ final class TodaysFeedViewController: UIViewController {
         articles = newArticles
         
         tableView.reloadData()
-        refreshControl.endRefreshing()
-        
         if newArticles.isEmpty {
             showEmptyState()
+        } else {
+            tableView.backgroundView = nil
         }
     }
     

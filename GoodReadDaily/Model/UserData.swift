@@ -11,4 +11,18 @@ struct UserData: Codable {
     var savedWords: [DictionaryEntry]
     var todaysArticles: [Article] = []
     var preferences: UserPreferences
+    
+    init(
+        completedArticleIDs: [String] = [],
+        inProgressArticleIDs: [String] = [],
+        savedWords: [DictionaryEntry] = [],
+        todaysArticles: [Article] = [],
+        preferences: UserPreferences = UserPreferences()
+    ) {
+        self.completedArticleIDs = completedArticleIDs
+        self.inProgressArticleIDs = inProgressArticleIDs
+        self.savedWords = savedWords
+        self.todaysArticles = todaysArticles
+        self.preferences = preferences
+    }
 }
