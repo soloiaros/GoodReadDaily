@@ -3,3 +3,6 @@ GoodReadDaily.xcodeproj/project.xcworkspace/xcuserdata/*.xcuserstate
 *.xcuserstate
 *.xcworkspacedata
 *.xcbkptlist
+# Xcode user-specific files
+xcuserdata/
+*.xcuserdatad/
