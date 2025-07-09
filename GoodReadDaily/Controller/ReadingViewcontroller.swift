@@ -83,8 +83,16 @@ final class ArticleViewController: UIViewController {
         contentView.addSubview(contentLabel)
         
         // Read Button
-        readButton.setTitle("Mark as read", for: .normal)
-        readButton.backgroundColor = .systemBlue
+        var color = UIColor.systemBlue
+        var title = "Mark as read"
+//        let articleID = article.id
+//        if !UserDataManager.shared.userData.completedArticleIDs.contains(articleID) {
+//            title = "✓ Read"
+//            color = UIColor.systemGreen
+//            return
+//        }
+        readButton.backgroundColor = color
+        readButton.setTitle(title, for: .normal)
         readButton.setTitleColor(.white, for: .normal)
         readButton.layer.cornerRadius = 8
         readButton.addTarget(self, action: #selector(readButtonTapped), for: .touchUpInside)
@@ -143,14 +151,11 @@ final class ArticleViewController: UIViewController {
     }
     
     @objc private func readButtonTapped() {
-        // Здесь можно добавить логику отметки статьи как прочитанной
-        print("Статья \(article.id) отмечена как прочитанная")
-        
+
         // Визуальная обратная связь
         readButton.setTitle("✓ Read", for: .normal)
         readButton.backgroundColor = .systemGreen
         
-        // Можно добавить анимацию
         UIView.animate(withDuration: 0.3, animations: {
             self.readButton.transform = CGAffineTransform(scaleX: 1.05, y: 1.05)
         }) { _ in
@@ -159,7 +164,27 @@ final class ArticleViewController: UIViewController {
             }
         }
         
-        
+        let articleID = article.id
+        if UserDataManager.shared.userData.completedArticleIDs.contains(articleID) {
+            
+            showAlreadyReadAlert()
+            return
+        }
+        else {
+            UserDataManager.shared.userData.completedArticleIDs.append(articleID)
+            return
+        }
         
     }
+        
+    private func showAlreadyReadAlert() {
+        let alert = UIAlertController(
+            title: "This article is already read",
+            message: "You have marked this article as read before. No need to mark it again!",
+            preferredStyle: .alert
+        )
+        alert.addAction(UIAlertAction(title: "OK", style: .default))
+        present(alert, animated: true)
+    }
+        
 }
