@@ -103,7 +103,12 @@ extension TodaysFeedViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
         let selectedArticle = articles[indexPath.row]
+        let selectedArticleID = selectedArticle.id
+        if !UserDataManager.shared.userData.inProgressArticleIDs.contains(selectedArticleID) {
+            UserDataManager.shared.userData.inProgressArticleIDs.append(selectedArticleID)
+        }
         let detailVC = ArticleViewController(article: selectedArticle)
         navigationController?.pushViewController(detailVC, animated: true)
+        print(UserDataManager.shared.userData.inProgressArticleIDs)
     }
 }
