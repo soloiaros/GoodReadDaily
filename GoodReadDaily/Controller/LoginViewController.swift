@@ -1,105 +1,106 @@
 //
-//  LoginViewController.swift
+//  RegisterView.swift
 //  GoodReadDaily
 //
-//  Created by Yaroslav Solovev on 7/6/25.
+//  Created by Olga Eliseeva on 09.07.2025.
 //
-
 import UIKit
 
 class LoginViewController: UIViewController {
-    let emailField = UITextField()
-    let passwordField = UITextField()
-    let loginButton = UIButton(type: .system)
-    let registerButton = UIButton(type: .system)
+    private let emailField = UITextField()
+    private let passwordField = UITextField()
+    private let loginButton = UIButton(type: .system)
+    private let registerButton = UIButton(type: .system)
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        emailField.autocapitalizationType = .none
-        passwordField.autocapitalizationType = .none
-        
-        view.backgroundColor = .systemBackground
-        
-        title = "Login"
+        configureTextFields()
         setupUI()
     }
     
-    func setupUI() {
+    private func configureTextFields() {
+        emailField.autocapitalizationType = .none
         emailField.placeholder = "Email"
+        emailField.keyboardType = .emailAddress
+        
+        passwordField.autocapitalizationType = .none
         passwordField.placeholder = "Password"
         passwordField.isSecureTextEntry = true
+    }
+    
+    private func setupUI() {
+        view.backgroundColor = .systemBackground
+        title = "Login"
         
+        // Configure buttons
         loginButton.setTitle("Sign In", for: .normal)
-        registerButton.setTitle("Don't have an account?", for: .normal)
-        
         loginButton.addTarget(self, action: #selector(signInTapped), for: .touchUpInside)
+        
+        registerButton.setTitle("Create Account", for: .normal)
         registerButton.addTarget(self, action: #selector(registerTapped), for: .touchUpInside)
         
-        let stack = UIStackView(arrangedSubviews: [emailField, passwordField, loginButton, registerButton])
-        stack.axis = .vertical
-        stack.spacing = 12
-        stack.translatesAutoresizingMaskIntoConstraints = false
+        // Create stack view
+        let stackView = UIStackView(arrangedSubviews: [emailField, passwordField, loginButton, registerButton])
+        stackView.axis = .vertical
+        stackView.spacing = 16
+        stackView.translatesAutoresizingMaskIntoConstraints = false
         
-        view.addSubview(stack)
+        view.addSubview(stackView)
         
+        // Set constraints
         NSLayoutConstraint.activate([
-            stack.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            stack.centerYAnchor.constraint(equalTo: view.centerYAnchor),
-            stack.widthAnchor.constraint(equalToConstant: 250)
+            stackView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            stackView.centerYAnchor.constraint(equalTo: view.centerYAnchor),
+            stackView.widthAnchor.constraint(equalTo: view.widthAnchor, multiplier: 0.8)
         ])
     }
     
-    @objc func signInTapped() {
-        guard let email = emailField.text, let password = passwordField.text else { return }
-        AuthManager.shared.signIn(email: email, password: password) { result in
+    @objc private func signInTapped() {
+        guard let email = emailField.text, !email.isEmpty,
+              let password = passwordField.text, !password.isEmpty else {
+            showAlert(title: "Error", message: "Please fill in all fields")
+            return
+        }
+        
+        AuthManager.shared.signIn(email: email, password: password) { [weak self] result in
             DispatchQueue.main.async {
                 switch result {
-                case .success(_):
-                    self.routeAfterLogin()
+                case .success:
+                    self?.routeAfterLogin()
                 case .failure(let error):
-                    self.showError(error)
+                    self?.showError(error)
                 }
             }
         }
     }
     
-    @objc func registerTapped() {
-        guard let email = emailField.text, let password = passwordField.text else { return }
-        AuthManager.shared.register(email: email, password: password) { result in
-            DispatchQueue.main.async {
-                switch result {
-                case .success(_):
-                    self.routeAfterLogin()
-                case .failure(let error):
-                    self.showError(error)
-                }
-            }
+    @objc private func registerTapped() {
+        let registerVC = RegisterViewController()
+        registerVC.onRegistrationSuccess = { [weak self] email, password in
+            self?.emailField.text = email
+            self?.passwordField.text = password
+            self?.signInTapped() // Automatically sign in after registration
         }
+        navigationController?.pushViewController(registerVC, animated: true)
     }
-
-    func routeAfterLogin() {
+    
+    private func routeAfterLogin() {
         UserDataManager.shared.reset()
 
         let prefs = UserDataManager.shared.userData.preferences
-        if prefs.hasSeenGenreScreen {
-            let mainVC = MainViewController()
-            let nav = UINavigationController(rootViewController: mainVC)
-            nav.modalPresentationStyle = .fullScreen
-            present(nav, animated: true)
-        } else {
-            let genreVC = GenreSelectionViewController()
-            let nav = UINavigationController(rootViewController: genreVC)
-            nav.modalPresentationStyle = .fullScreen
-            present(nav, animated: true)
-        }
+        let rootVC = prefs.hasSeenGenreScreen ? MainViewController() : GenreSelectionViewController()
+        let navController = UINavigationController(rootViewController: rootVC)
+        navController.modalPresentationStyle = .fullScreen
+        present(navController, animated: true)
     }
-
-
     
-    func showError(_ error: Error) {
-        let alert = UIAlertController(title: "Error", message: error.localizedDescription, preferredStyle: .alert)
-        alert.addAction(UIAlertAction(title: "OK", style: .cancel))
+    private func showError(_ error: Error) {
+        showAlert(title: "Error", message: error.localizedDescription)
+    }
+    
+    private func showAlert(title: String, message: String) {
+        let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "OK", style: .default))
         present(alert, animated: true)
     }
 }
