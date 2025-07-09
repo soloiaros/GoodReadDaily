@@ -10,6 +10,7 @@ import UIKit
 class DictionaryViewController: UIViewController {
     private var tableView: UITableView!
     private var savedWords: [DictionaryEntry] = []
+    private var floatingButton: FloatingActionButton!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -17,6 +18,7 @@ class DictionaryViewController: UIViewController {
         title = "Dictionary"
         
         setupTableView()
+        setupFloatingButton()
         loadSavedWords()
     }
     
@@ -51,6 +53,27 @@ class DictionaryViewController: UIViewController {
                 showEmptyState()
             }
         }
+    }
+    
+    private func setupFloatingButton() {
+        floatingButton = FloatingActionButton()
+        floatingButton.translatesAutoresizingMaskIntoConstraints = false
+        floatingButton.addTarget(self, action: #selector(floatingButtonTapped), for: .touchUpInside)
+        view.addSubview(floatingButton)
+        
+        NSLayoutConstraint.activate([
+            floatingButton.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -20),
+            floatingButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -20),
+            floatingButton.widthAnchor.constraint(equalToConstant: 56),
+            floatingButton.heightAnchor.constraint(equalToConstant: 56)
+        ])
+    }
+    
+    @objc private func floatingButtonTapped() {
+        let addWordVC = AddWordViewController()
+        addWordVC.delegate = self
+        let navController = UINavigationController(rootViewController: addWordVC)
+        present(navController, animated: true)
     }
     
     private func showEmptyState() {
@@ -95,6 +118,17 @@ extension DictionaryViewController: UITableViewDataSource, UITableViewDelegate {
         // for future, to make clickable
         let wordEntry = savedWords[indexPath.row]
         print("Selected word: \(wordEntry.word)")
+    }
+}
+
+extension DictionaryViewController: AddWordDelegate {
+    func didAddWord(_ word: DictionaryEntry) {
+        savedWords.insert(word, at: 0)
+        tableView.beginUpdates()
+        tableView.insertRows(at: [IndexPath(row: 0, section: 0)], with: .automatic)
+        tableView.endUpdates()
+        
+        showEmptyState()
     }
 }
 
