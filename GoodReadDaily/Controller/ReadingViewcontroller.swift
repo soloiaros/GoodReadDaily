@@ -11,7 +11,7 @@ final class ArticleViewController: UIViewController {
     private let authorLabel = UILabel()
     private let genreLabel = UILabel()
     private let idLabel = UILabel()
-    private let contentLabel = UILabel()
+    private let contentTextView = UITextView() // Заменяем UILabel на UITextView
     private let readButton = UIButton(type: .system)
     
     init(article: Article) {
@@ -78,10 +78,15 @@ final class ArticleViewController: UIViewController {
         idLabel.textColor = .lightGray
         contentView.addSubview(idLabel)
         
-        // Content Label
-        contentLabel.font = UIFont.systemFont(ofSize: 18)
-        contentLabel.numberOfLines = 0
-        contentView.addSubview(contentLabel)
+        // Content TextView (заменяем UILabel)
+        contentTextView.font = UIFont.systemFont(ofSize: 18)
+        contentTextView.isEditable = false
+        contentTextView.isSelectable = true // Разрешаем выделение текста
+        contentTextView.isScrollEnabled = false // Отключаем скролл, так как у нас есть scrollView
+        contentTextView.textContainerInset = .zero
+        contentTextView.textContainer.lineFragmentPadding = 0
+        contentTextView.dataDetectorTypes = .all // Распознавание ссылок, номеров и т.д.
+        contentView.addSubview(contentTextView)
         
         //Basic Settings
         readButton.setTitle("Mark as Read", for: .normal)
@@ -98,7 +103,7 @@ final class ArticleViewController: UIViewController {
         authorLabel.translatesAutoresizingMaskIntoConstraints = false
         genreLabel.translatesAutoresizingMaskIntoConstraints = false
         idLabel.translatesAutoresizingMaskIntoConstraints = false
-        contentLabel.translatesAutoresizingMaskIntoConstraints = false
+        contentTextView.translatesAutoresizingMaskIntoConstraints = false
         readButton.translatesAutoresizingMaskIntoConstraints = false
         
         NSLayoutConstraint.activate([
@@ -122,11 +127,11 @@ final class ArticleViewController: UIViewController {
             idLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
             idLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
             
-            contentLabel.topAnchor.constraint(equalTo: idLabel.bottomAnchor, constant: 16),
-            contentLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
-            contentLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
+            contentTextView.topAnchor.constraint(equalTo: idLabel.bottomAnchor, constant: 16),
+            contentTextView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
+            contentTextView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
             
-            readButton.topAnchor.constraint(equalTo: contentLabel.bottomAnchor, constant: 24),
+            readButton.topAnchor.constraint(equalTo: contentTextView.bottomAnchor, constant: 24),
             readButton.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
             readButton.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
             readButton.heightAnchor.constraint(equalToConstant: 44),
@@ -141,27 +146,26 @@ final class ArticleViewController: UIViewController {
         authorLabel.text = "By \(article.author)"
         genreLabel.text = "#\(article.genre)"
         idLabel.text = "ID: \(article.id)"
-        contentLabel.text = article.content
+        contentTextView.text = article.content
     }
     
     private func setupReadButtonInitialState() {
-            let articleId = article.id
-            
-            if UserDataManager.shared.userData.completedArticleIDs.contains(articleId) {
-                // Статья уже прочитана - настраиваем кнопку как "прочитано"
-                readButton.setTitle("✓ Read", for: .normal)
-                readButton.backgroundColor = .systemGreen
-                readButton.isEnabled = false
-            } else {
-                // Статья нет в прочитанных - обычное состояние
-                readButton.setTitle("Mark as Read", for: .normal)
-                readButton.backgroundColor = .systemBlue
-                readButton.isEnabled = true
-            }
+        let articleId = article.id
+        
+        if UserDataManager.shared.userData.completedArticleIDs.contains(articleId) {
+            // Статья уже прочитана - настраиваем кнопку как "прочитано"
+            readButton.setTitle("✓ Read", for: .normal)
+            readButton.backgroundColor = .systemGreen
+            readButton.isEnabled = false
+        } else {
+            // Статья нет в прочитанных - обычное состояние
+            readButton.setTitle("Mark as Read", for: .normal)
+            readButton.backgroundColor = .systemBlue
+            readButton.isEnabled = true
         }
+    }
     
     @objc private func readButtonTapped() {
-
         // Визуальная обратная связь
         readButton.setTitle("✓ Read", for: .normal)
         readButton.backgroundColor = .systemGreen
@@ -176,7 +180,6 @@ final class ArticleViewController: UIViewController {
         
         let articleID = article.id
         if UserDataManager.shared.userData.completedArticleIDs.contains(articleID) {
-            
             showAlreadyReadAlert()
             return
         }
@@ -185,7 +188,6 @@ final class ArticleViewController: UIViewController {
             UserDataManager.shared.save()
             return
         }
-        
     }
         
     private func showAlreadyReadAlert() {
@@ -197,5 +199,4 @@ final class ArticleViewController: UIViewController {
         alert.addAction(UIAlertAction(title: "OK", style: .default))
         present(alert, animated: true)
     }
-        
 }
