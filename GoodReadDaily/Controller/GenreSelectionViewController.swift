@@ -16,6 +16,7 @@ class GenreSelectionViewController: UIViewController {
     }
     
     let doneButton = UIButton(type: .system)
+    let skipButton = UIButton(type: .system)
     let genreButtons: [GenreSelectButton] = []
     let maxGenreSelection = 5
     var counterLabel: UILabel!
@@ -55,30 +56,36 @@ class GenreSelectionViewController: UIViewController {
             button.tag = genres.firstIndex(of: genre)!
             button.addTarget(self, action: #selector(toggleGenre(_:)), for: .touchUpInside)
             button.setTitle(genre, for: .normal)
-            button.tag = genres.firstIndex(of: genre)!
-            button.addTarget(self, action: #selector(toggleGenre(_:)), for: .touchUpInside)
             stack.addArrangedSubview(button)
         }
         
         doneButton.setTitle("Continue", for: .normal)
         doneButton.addTarget(self, action: #selector(finishOnboarding), for: .touchUpInside)
-        doneButton.translatesAutoresizingMaskIntoConstraints = false
-        
 //        doneButton.translatesAutoresizingMaskIntoConstraints = false
-//        doneButton.topAnchor.constraint(equalTo: stack.bottomAnchor, constant: 20).isActive = true
-//        doneButton.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
+        skipButton.setTitle("Skip", for: .normal)
+        skipButton.setTitleColor(.gray, for: .normal)
+        skipButton.addTarget(self, action: #selector(skipOnboarding), for: .touchUpInside)
+        
+        let buttonStack = UIStackView(arrangedSubviews: [doneButton, skipButton])
+        buttonStack.axis = .vertical
+        buttonStack.spacing = 8
+        buttonStack.translatesAutoresizingMaskIntoConstraints = false
         
         view.addSubview(stack)
-        view.addSubview(doneButton)
+        view.addSubview(buttonStack)
         
         NSLayoutConstraint.activate([
             stack.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             stack.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 40),
             stack.widthAnchor.constraint(equalToConstant: 280),
             
-            doneButton.topAnchor.constraint(equalTo: stack.bottomAnchor, constant: 30),
-            doneButton.centerXAnchor.constraint(equalTo: view.centerXAnchor)
+            buttonStack.topAnchor.constraint(equalTo: stack.bottomAnchor, constant: 30),
+            buttonStack.centerXAnchor.constraint(equalTo: view.centerXAnchor)
         ])
+    }
+    
+    @objc func skipOnboarding() {
+        proceedWithOnboarding(genres: [])
     }
     
     @objc func toggleGenre(_ sender: GenreSelectButton) {
@@ -105,16 +112,15 @@ class GenreSelectionViewController: UIViewController {
     }
     
     @objc func finishOnboarding() {
-        guard !selectedGenres.isEmpty else {
-            showValidationAlert(message: "Please select at least one to continue.")
-            return
-        }
-        
         guard selectedGenres.count <= maxGenreSelection else {
             showValidationAlert(message: "You can only select \(maxGenreSelection) genres.")
             return
         }
         
+        proceedWithOnboarding(genres: Array(selectedGenres))
+    }
+    
+    private func proceedWithOnboarding(genres: [String]) {
         var userData = UserDataManager.shared.userData
         userData.preferences.genres = Array(selectedGenres)
         userData.preferences.hasSeenGenreScreen = true

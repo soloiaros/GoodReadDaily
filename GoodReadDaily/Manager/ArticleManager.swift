@@ -20,9 +20,14 @@ class ArticleManager {
     
     static func getRandomArticles(for genres: [String], count: Int) -> [Article] {
         let allArticles = loadArticles()
+        
+        if genres.isEmpty {
+            return getArticlesWhenNoGenresSelected(count: count, from: allArticles)
+        }
+        
         let filteredArticles = allArticles.filter {
             article in
-            genres.contains(article.genre)
+            genres.contains { $0.lowercased() == article.genre.lowercased() }
         }
         
         if filteredArticles.count <= count {
@@ -30,5 +35,15 @@ class ArticleManager {
         }
         
         return Array(filteredArticles.shuffled().prefix(count))
+    }
+    
+    private static func getArticlesWhenNoGenresSelected(count: Int, from pool: [Article]) -> [Article] {
+        guard !pool.isEmpty else { return [] }
+        
+        if pool.count <= count {
+            return pool.shuffled()
+        }
+        
+        return Array (pool.shuffled().prefix(count))
     }
 }
