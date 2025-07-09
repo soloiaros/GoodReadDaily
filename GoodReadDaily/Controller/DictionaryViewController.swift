@@ -115,9 +115,9 @@ extension DictionaryViewController: UITableViewDataSource, UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
         
-        // for future, to make clickable
         let wordEntry = savedWords[indexPath.row]
-        print("Selected word: \(wordEntry.word)")
+        let detailVC = WordDetailViewController(word: wordEntry.word, context: wordEntry.context)
+        navigationController?.pushViewController(detailVC, animated: true)
     }
     
     func tableView(_ tableview: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
