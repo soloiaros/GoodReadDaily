@@ -24,7 +24,7 @@ class FinishedViewController: UIViewController {
         
         tableView.dataSource = self
         tableView.delegate = self
-        tableView.register(ArticleTableViewCell.self, forCellReuseIdentifier: "ArticleCell")
+        tableView.register(ArticleTableCell.self, forCellReuseIdentifier: "ArticleCell")
     }
     
     private func loadFinishedArticles() {
@@ -86,7 +86,7 @@ extension FinishedViewController: UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "ArticleCell", for: indexPath) as! ArticleTableViewCell
+        let cell = tableView.dequeueReusableCell(withIdentifier: "ArticleCell", for: indexPath) as! ArticleTableCell
         let article = articles[indexPath.row]
         cell.configure(with: article)
         return cell
@@ -116,7 +116,7 @@ extension FinishedViewController: UITableViewDelegate {
     }
 }
 
-class ArticleTableViewCell: UITableViewCell {
+class ArticleTableCell: UITableViewCell {
     private let titleLabel: UILabel = {
         let label = UILabel()
         label.font = UIFont.systemFont(ofSize: 16, weight: .medium)
