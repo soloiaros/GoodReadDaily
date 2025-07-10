@@ -33,7 +33,8 @@ final class ArticleViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .white
+        view.backgroundColor = UIColor(red: 255/255, green: 245/255, blue: 220/255, alpha: 1.0)
+        contentTextView.backgroundColor = UIColor(red: 255/255, green: 245/255, blue: 220/255, alpha: 1.0)
         setupUI()
         configure(with: article)
         updateReadButtonState()
@@ -138,37 +139,49 @@ final class ArticleViewController: UIViewController {
         subtitleLabel.numberOfLines = 0
         contentView.addSubview(subtitleLabel)
         
+        
         // Author Label
         authorLabel.font = UIFont.systemFont(ofSize: 14)
         authorLabel.textColor = .darkGray
+        authorLabel.textAlignment = .right
         contentView.addSubview(authorLabel)
-        
+               
         // Genre Label
         genreLabel.font = UIFont.systemFont(ofSize: 14)
         genreLabel.textColor = .darkGray
+        genreLabel.textAlignment = .right
         contentView.addSubview(genreLabel)
         
+        
         // ID Label
-        idLabel.font = UIFont.systemFont(ofSize: 12)
+        idLabel.font = UIFont.systemFont(ofSize: 0)
         idLabel.textColor = .lightGray
         contentView.addSubview(idLabel)
         
         // Content TextView
-        contentTextView.font = UIFont.systemFont(ofSize: 18)
+        contentTextView.font = tinos_reg
         contentTextView.isEditable = false
         contentTextView.isSelectable = true
         contentTextView.isScrollEnabled = false
         contentTextView.textContainerInset = .zero
         contentTextView.textContainer.lineFragmentPadding = 0
         contentTextView.dataDetectorTypes = .all
+        contentView.backgroundColor = UIColor(red: 255/255, green: 245/255, blue: 220/255, alpha: 1.0)
+        contentView.tintColor =  UIColor(red: 255/255, green: 245/255, blue: 220/255, alpha: 1.0)
         contentView.addSubview(contentTextView)
         
         // Read Button Settings
         readButton.setTitle("Mark as Read", for: .normal)
         readButton.titleLabel?.font = UIFont.systemFont(ofSize: 18, weight: .medium)
-        readButton.backgroundColor = .systemBlue
+        readButton.backgroundColor = UIColor(red: 191/255, green: 155/255, blue: 132/255, alpha: 0.51)
         readButton.setTitleColor(.white, for: .normal)
-        readButton.layer.cornerRadius = 8
+        readButton.layer.cornerRadius = 15
+        readButton.addTarget(self, action: #selector(readButtonTapped), for: .touchUpInside)
+    
+        readButton.layer.shadowColor = UIColor.black.cgColor
+        readButton.layer.shadowOpacity = 0.21
+        readButton.layer.shadowOffset = CGSize(width: 0, height: 2)
+        readButton.layer.shadowRadius = 4
         readButton.addTarget(self, action: #selector(readButtonTapped), for: .touchUpInside)
         contentView.addSubview(readButton)
         
@@ -185,33 +198,34 @@ final class ArticleViewController: UIViewController {
             titleLabel.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 20),
             titleLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
             titleLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
-            
+                 
             subtitleLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 8),
             subtitleLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
             subtitleLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
-            
-            authorLabel.topAnchor.constraint(equalTo: subtitleLabel.bottomAnchor, constant: 12),
+                 
+            authorLabel.topAnchor.constraint(equalTo: subtitleLabel.bottomAnchor, constant: 8),
             authorLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
             authorLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
-            
+             
+                 
             genreLabel.topAnchor.constraint(equalTo: authorLabel.bottomAnchor, constant: 4),
             genreLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
             genreLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
-            
-            idLabel.topAnchor.constraint(equalTo: genreLabel.bottomAnchor, constant: 4),
+                 
+            idLabel.topAnchor.constraint(equalTo: genreLabel.bottomAnchor, constant: 0),
             idLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
             idLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
-            
+                 
             contentTextView.topAnchor.constraint(equalTo: idLabel.bottomAnchor, constant: 16),
             contentTextView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
             contentTextView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
-            
+                 
             readButton.topAnchor.constraint(equalTo: contentTextView.bottomAnchor, constant: 24),
             readButton.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
             readButton.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
             readButton.heightAnchor.constraint(equalToConstant: 44),
             readButton.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -20)
-        ])
+             ])
     }
     
     private func configure(with article: Article) {
@@ -227,17 +241,17 @@ final class ArticleViewController: UIViewController {
     private func updateReadButtonState() {
         guard let userData = SwiftDataManager.shared.getUserData() else {
             readButton.setTitle("Mark as Read", for: .normal)
-            readButton.backgroundColor = .systemBlue
+            readButton.backgroundColor = UIColor(red: 191/255, green: 155/255, blue: 132/255, alpha: 0.51)
             return
         }
         let isRead = userData.completedArticleIDs.contains(article.id)
         
         if isRead {
             readButton.setTitle("✓ Read", for: .normal)
-            readButton.backgroundColor = .systemGreen
+            readButton.backgroundColor = UIColor(red: 89/255, green: 101/255, blue: 123/255, alpha: 1.0)
         } else {
             readButton.setTitle("Mark as Read", for: .normal)
-            readButton.backgroundColor = .systemBlue
+            readButton.backgroundColor = UIColor(red: 191/255, green: 155/255, blue: 132/255, alpha: 0.51)
         }
     }
     
