@@ -1,11 +1,3 @@
-//
-//  ViewController.swift
-//  GoodReadDaily
-//
-//  Created by Yaroslav Solovev on 7/4/25.
-//
-
-
 import UIKit
 import FirebaseAuth
 
@@ -20,6 +12,11 @@ class MainViewController: UIViewController {
     private let inProcessButton = MainWidgetButton(
         title: "In Process",
         subtitle: "Continue reading"
+    )
+    
+    private let finishedArticlesButton = MainWidgetButton(
+        title: "Finished Articles",
+        subtitle: "View your completed readings"
     )
     
     private let dictionaryButton = MainWidgetButton(
@@ -45,7 +42,12 @@ class MainViewController: UIViewController {
     }
     
     private func setupLayout() {
-        let stackView = UIStackView(arrangedSubviews: [todaysFeedButton, inProcessButton, dictionaryButton])
+        let stackView = UIStackView(arrangedSubviews: [
+            todaysFeedButton,
+            inProcessButton,
+            finishedArticlesButton,
+            dictionaryButton
+        ])
         stackView.axis = .vertical
         stackView.spacing = 20
         stackView.translatesAutoresizingMaskIntoConstraints = false
@@ -64,21 +66,31 @@ class MainViewController: UIViewController {
     private func setupActions() {
         todaysFeedButton.addTarget(self, action: #selector(openTodaysFeed), for: .touchUpInside)
         inProcessButton.addTarget(self, action: #selector(openInProcess), for: .touchUpInside)
+        finishedArticlesButton.addTarget(self, action: #selector(openFinishedArticles), for: .touchUpInside)
         dictionaryButton.addTarget(self, action: #selector(openDictionary), for: .touchUpInside)
         logoutButton.addTarget(self, action: #selector(handleLogout), for: .touchUpInside)
     }
 
     @objc private func openTodaysFeed() {
+        print("Feed btn")
         let vc = TodaysFeedViewController()
         navigationController?.pushViewController(vc, animated: true)
     }
 
     @objc private func openInProcess() {
+        print("process btn")
         let vc = InProcessViewController()
+        navigationController?.pushViewController(vc, animated: true)
+    }
+    
+    @objc private func openFinishedArticles() {
+        print("Finished articles btn")
+        let vc = FinishedViewController()
         navigationController?.pushViewController(vc, animated: true)
     }
 
     @objc private func openDictionary() {
+        print("Dictionary btn")
         let vc = DictionaryViewController()
         navigationController?.pushViewController(vc, animated: true)
     }
@@ -86,6 +98,11 @@ class MainViewController: UIViewController {
     @objc private func handleLogout() {
         do {
             try Auth.auth().signOut()
+            
+            let appDomain = Bundle.main.bundleIdentifier!
+            UserDefaults.standard.removePersistentDomain(forName: appDomain)
+            UserDefaults.standard.synchronize()
+            
             let loginVC = LoginViewController()
             let navVC = UINavigationController(rootViewController: loginVC)
             
@@ -93,7 +110,7 @@ class MainViewController: UIViewController {
                 sceneDelegate.window?.rootViewController = navVC
             }
         } catch let signOutError as NSError {
-            print("Error signing out: \(signOutError)")
+            print("Error signing out: %@", signOutError)
         }
     }
 }
@@ -118,18 +135,21 @@ class MainWidgetButton: UIControl {
         layer.cornerRadius = 12
         translatesAutoresizingMaskIntoConstraints = false
         
+        // Title
         titleLabelView.text = title
         titleLabelView.font = UIFont.systemFont(ofSize: isLarge ? 22 : 18, weight: .bold)
         titleLabelView.textColor = .label
         titleLabelView.numberOfLines = 0
         titleLabelView.isUserInteractionEnabled = false
         
+        // Subtitle
         subtitleLabelView.text = subtitle
         subtitleLabelView.font = UIFont.systemFont(ofSize: isLarge ? 16 : 14)
         subtitleLabelView.textColor = .darkGray
         subtitleLabelView.numberOfLines = 0
         subtitleLabelView.isUserInteractionEnabled = false
         
+        // Stack
         contentStack.axis = .vertical
         contentStack.spacing = 6
         contentStack.translatesAutoresizingMaskIntoConstraints = false

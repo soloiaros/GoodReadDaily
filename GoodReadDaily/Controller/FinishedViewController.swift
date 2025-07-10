@@ -1,15 +1,15 @@
 import UIKit
 
-class InProcessViewController: UIViewController {
+class FinishedViewController: UIViewController {
     private var articles: [Article] = []
     private let tableView = UITableView()
     
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .white
-        title = "Currently Reading"
+        title = "Finished Reading"
         setupTableView()
-        loadInProgressArticles()
+        loadFinishedArticles()
     }
     
     private func setupTableView() {
@@ -27,12 +27,9 @@ class InProcessViewController: UIViewController {
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: "ArticleCell")
     }
     
-    private func loadInProgressArticles() {
-        let inProgressIDs = UserDataManager.shared.userData.inProgressArticleIDs
-        articles = ArticleManager.loadArticles().filter { article in
-            inProgressIDs.contains(article.id)
-        }
-        articles = articles.filter { !UserDataManager.shared.userData.completedArticleIDs.contains($0.id)
+    private func loadFinishedArticles() {
+        let CompletedIDs = UserDataManager.shared.userData.completedArticleIDs
+        articles = ArticleManager.loadArticles().filter { CompletedIDs.contains($0.id)
         }
         tableView.reloadData()
         
@@ -43,7 +40,7 @@ class InProcessViewController: UIViewController {
     
     private func showEmptyState() {
         let emptyLabel = UILabel()
-        emptyLabel.text = "You don't have any articles in progress"
+        emptyLabel.text = "You don't have any completed articles"
         emptyLabel.textAlignment = .center
         emptyLabel.textColor = .gray
         emptyLabel.numberOfLines = 0
@@ -52,7 +49,7 @@ class InProcessViewController: UIViewController {
     }
 }
 
-extension InProcessViewController: UITableViewDataSource {
+extension FinishedViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return articles.count
     }
@@ -68,7 +65,7 @@ extension InProcessViewController: UITableViewDataSource {
     }
 }
 
-extension InProcessViewController: UITableViewDelegate {
+extension FinishedViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
         let selectedArticle = articles[indexPath.row]
