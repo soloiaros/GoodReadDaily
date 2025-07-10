@@ -3,6 +3,8 @@ import UIKit
 final class ArticleViewController: UIViewController {
     private let article: Article
     
+    private let articlecolour = UIColor(red: 235, green: 226, blue: 197, alpha: 1.0)
+
     // UI Elements
     private let scrollView = UIScrollView()
     private let contentView = UIView()
@@ -25,7 +27,7 @@ final class ArticleViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .white
+        view.backgroundColor = UIColor(red: 255/255, green: 245/255, blue: 220/255, alpha: 1.0)
         setupUI()
         configure(with: article)
     }
@@ -52,33 +54,35 @@ final class ArticleViewController: UIViewController {
         ])
         
         // Title Label
-        titleLabel.font = UIFont.boldSystemFont(ofSize: 24)
+        titleLabel.font = mont_med
         titleLabel.numberOfLines = 0
         contentView.addSubview(titleLabel)
         
         // Subtitle Label
-        subtitleLabel.font = UIFont.italicSystemFont(ofSize: 16)
+        subtitleLabel.font = mont_it_big
         subtitleLabel.textColor = .gray
         subtitleLabel.numberOfLines = 0
         contentView.addSubview(subtitleLabel)
         
         // Author Label
-        authorLabel.font = UIFont.systemFont(ofSize: 14)
+        authorLabel.font = mont_light
         authorLabel.textColor = .darkGray
+        authorLabel.textAlignment = .right
         contentView.addSubview(authorLabel)
         
         // Genre Label
-        genreLabel.font = UIFont.systemFont(ofSize: 14)
+        genreLabel.font = mont_light
         genreLabel.textColor = .darkGray
+        genreLabel.textAlignment = .right
         contentView.addSubview(genreLabel)
         
         // ID Label
-        idLabel.font = UIFont.systemFont(ofSize: 12)
+        idLabel.font = Ofont
         idLabel.textColor = .lightGray
         contentView.addSubview(idLabel)
         
         // Content Label
-        contentLabel.font = UIFont.systemFont(ofSize: 18)
+        contentLabel.font = tinos_reg
         contentLabel.numberOfLines = 0
         contentView.addSubview(contentLabel)
         
@@ -91,12 +95,19 @@ final class ArticleViewController: UIViewController {
 //            color = UIColor.systemGreen
 //            return
 //        }
-        readButton.backgroundColor = color
+        readButton.backgroundColor = UIColor(red: 191/255, green: 155/255, blue: 132/255, alpha: 0.51)
         readButton.setTitle(title, for: .normal)
         readButton.setTitleColor(.white, for: .normal)
-        readButton.layer.cornerRadius = 8
+        readButton.layer.cornerRadius = 15
+        readButton.addTarget(self, action: #selector(readButtonTapped), for: .touchUpInside)
+
+        readButton.layer.shadowColor = UIColor.black.cgColor
+        readButton.layer.shadowOpacity = 0.21
+        readButton.layer.shadowOffset = CGSize(width: 0, height: 2)
+        readButton.layer.shadowRadius = 4
         readButton.addTarget(self, action: #selector(readButtonTapped), for: .touchUpInside)
         contentView.addSubview(readButton)
+        
         
         // Constraints
         titleLabel.translatesAutoresizingMaskIntoConstraints = false
@@ -116,15 +127,16 @@ final class ArticleViewController: UIViewController {
             subtitleLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
             subtitleLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
             
-            authorLabel.topAnchor.constraint(equalTo: subtitleLabel.bottomAnchor, constant: 12),
+            authorLabel.topAnchor.constraint(equalTo: subtitleLabel.bottomAnchor, constant: 8),
             authorLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
             authorLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
+        
             
             genreLabel.topAnchor.constraint(equalTo: authorLabel.bottomAnchor, constant: 4),
             genreLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
             genreLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
             
-            idLabel.topAnchor.constraint(equalTo: genreLabel.bottomAnchor, constant: 4),
+            idLabel.topAnchor.constraint(equalTo: genreLabel.bottomAnchor, constant: 0),
             idLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
             idLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
             
@@ -154,7 +166,7 @@ final class ArticleViewController: UIViewController {
 
         // Визуальная обратная связь
         readButton.setTitle("✓ Read", for: .normal)
-        readButton.backgroundColor = .systemGreen
+        readButton.backgroundColor = UIColor(red: 89/255, green: 101/255, blue: 123/255, alpha: 1.0)
         
         UIView.animate(withDuration: 0.3, animations: {
             self.readButton.transform = CGAffineTransform(scaleX: 1.05, y: 1.05)

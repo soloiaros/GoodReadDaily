@@ -106,6 +106,7 @@ extension DictionaryViewController: UITableViewDataSource, UITableViewDelegate {
             cell.textLabel?.text = wordEntry.word
         }
         
+        cell.contentView.layer.cornerRadius = 10
         cell.textLabel?.numberOfLines = 0
         cell.accessoryType = .disclosureIndicator // For future clickability
         

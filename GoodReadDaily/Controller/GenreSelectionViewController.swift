@@ -31,7 +31,7 @@ class GenreSelectionViewController: UIViewController {
     
     func setupNavigationCounter() {
         counterLabel = UILabel()
-        counterLabel.font = UIFont.systemFont(ofSize: 14, weight: .medium)
+        counterLabel.font = mont_reg
         counterLabel.textColor = .secondaryLabel
         updateCounterLabel()
         
@@ -170,7 +170,7 @@ class GenreSelectButton: UIButton {
         setTitle(title, for: .normal)
         layer.cornerRadius = 8
         layer.borderWidth = 1
-        titleLabel?.font = UIFont.systemFont(ofSize: 16, weight: .medium)
+        titleLabel?.font = mont_reg
         setTitleColor(.black, for: .normal)
         contentHorizontalAlignment = .left
         contentEdgeInsets = UIEdgeInsets(top: 10, left: 14, bottom: 10, right: 14)
