@@ -1,11 +1,3 @@
-//
-//  ViewController.swift
-//  GoodReadDaily
-//
-//  Created by Yaroslav Solovev on 7/4/25.
-//
-
-
 import UIKit
 import FirebaseAuth
 
@@ -28,23 +20,17 @@ class MainViewController: UIViewController {
     )
     
     private let finishedArticlesButton = MainWidgetButton(
-            title: "Finished Articles",
-            subtitle: "View your completed readings"
-        )
+        title: "Finished Articles",
+        subtitle: "View your completed readings"
+    )
     
-    private let logoutButton: UIButton = {
-        let button = UIButton(type: .system)
-        button.setTitle("Log Out", for: .normal)
-        button.setTitleColor(.systemRed, for: .normal)
-        button.titleLabel?.font = UIFont.systemFont(ofSize: 16, weight: .semibold)
-        button.translatesAutoresizingMaskIntoConstraints = false
-        return button
-    }()
-
+    private let bottomBar = BottomNavigationBar()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         title = "GoodReadDaily"
         view.backgroundColor = .white
+        setupBottomBar()
         setupLayout()
         setupActions()
     }
@@ -55,35 +41,72 @@ class MainViewController: UIViewController {
         stackView.spacing = 20
         stackView.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(stackView)
-        view.addSubview(logoutButton)
         
         NSLayoutConstraint.activate([
-            logoutButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -16),
-            logoutButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             stackView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 40),
             stackView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 24),
-            stackView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -24)
+            stackView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -24),
+            stackView.bottomAnchor.constraint(lessThanOrEqualTo: bottomBar.topAnchor, constant: -16)
         ])
     }
-
+    
+    private func setupBottomBar() {
+        bottomBar.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(bottomBar)
+        
+        NSLayoutConstraint.activate([
+            bottomBar.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            bottomBar.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            bottomBar.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
+            bottomBar.heightAnchor.constraint(equalToConstant: 60)
+        ])
+        
+        bottomBar.onMainTapped = { [weak self] in
+            // Already on MainViewController, no action needed
+        }
+        bottomBar.onResumeReadingTapped = { [weak self] in
+            self?.navigateToResumeReading()
+        }
+        bottomBar.onSettingsTapped = { [weak self] in
+            self?.navigationController?.pushViewController(SettingsViewController(), animated: true)
+        }
+        
+        updateResumeReadingButton()
+    }
+    
     private func setupActions() {
         todaysFeedButton.addTarget(self, action: #selector(openTodaysFeed), for: .touchUpInside)
         inProcessButton.addTarget(self, action: #selector(openInProcess), for: .touchUpInside)
         dictionaryButton.addTarget(self, action: #selector(openDictionary), for: .touchUpInside)
         finishedArticlesButton.addTarget(self, action: #selector(openFinishedArticles), for: .touchUpInside)
-        logoutButton.addTarget(self, action: #selector(handleLogout), for: .touchUpInside)
     }
-
+    
+    private func updateResumeReadingButton() {
+        if let userData = SwiftDataManager.shared.getUserData() {
+            bottomBar.updateResumeReadingButton(isEnabled: !userData.inProgressArticleIDs.isEmpty)
+        }
+    }
+    
+    private func navigateToResumeReading() {
+        guard let userData = SwiftDataManager.shared.getUserData(),
+              let lastArticleID = userData.inProgressArticleIDs.last,
+              let article = ArticleManager.getArticles(forIDs: [lastArticleID]).first else {
+            return
+        }
+        let detailVC = ArticleViewController(article: article)
+        navigationController?.pushViewController(detailVC, animated: true)
+    }
+    
     @objc private func openTodaysFeed() {
         let vc = TodaysFeedViewController()
         navigationController?.pushViewController(vc, animated: true)
     }
-
+    
     @objc private func openInProcess() {
         let vc = InProcessViewController()
         navigationController?.pushViewController(vc, animated: true)
     }
-
+    
     @objc private func openDictionary() {
         let vc = DictionaryViewController()
         navigationController?.pushViewController(vc, animated: true)
@@ -94,20 +117,6 @@ class MainViewController: UIViewController {
         let vc = FinishedViewController()
         navigationController?.pushViewController(vc, animated: true)
     }
-    
-    @objc private func handleLogout() {
-        do {
-            try Auth.auth().signOut()
-            let loginVC = LoginViewController()
-            let navVC = UINavigationController(rootViewController: loginVC)
-            
-            if let sceneDelegate = UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate {
-                sceneDelegate.window?.rootViewController = navVC
-            }
-        } catch let signOutError as NSError {
-            print("Error signing out: \(signOutError)")
-        }
-    }
 }
 
 class MainWidgetButton: UIControl {
@@ -115,16 +124,16 @@ class MainWidgetButton: UIControl {
     private let titleLabelView = UILabel()
     private let subtitleLabelView = UILabel()
     private let contentStack = UIStackView()
-
+    
     init(title: String, subtitle: String, isLarge: Bool = false) {
         super.init(frame: .zero)
         setupUI(title: title, subtitle: subtitle, isLarge: isLarge)
     }
-
+    
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-
+    
     private func setupUI(title: String, subtitle: String, isLarge: Bool) {
         backgroundColor = UIColor.systemBrown.withAlphaComponent(0.1)
         layer.cornerRadius = 12
@@ -158,7 +167,7 @@ class MainWidgetButton: UIControl {
             contentStack.centerYAnchor.constraint(equalTo: centerYAnchor)
         ])
     }
-
+    
     override var isHighlighted: Bool {
         didSet {
             alpha = isHighlighted ? 0.5 : 1.0

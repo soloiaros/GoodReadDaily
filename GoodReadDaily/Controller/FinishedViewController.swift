@@ -3,11 +3,13 @@ import UIKit
 class FinishedViewController: UIViewController {
     private var articles: [Article] = []
     private let tableView = UITableView()
+    private let bottomBar = BottomNavigationBar()
     
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .systemGroupedBackground
         title = "Finished Reading"
+        setupBottomBar() // Moved before setupTableView
         setupTableView()
         loadFinishedArticles()
     }
@@ -29,6 +31,30 @@ class FinishedViewController: UIViewController {
         tableView.backgroundColor = .clear
     }
     
+    private func setupBottomBar() {
+        bottomBar.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(bottomBar)
+        
+        NSLayoutConstraint.activate([
+            bottomBar.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            bottomBar.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            bottomBar.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
+            bottomBar.heightAnchor.constraint(equalToConstant: 60)
+        ])
+        
+        bottomBar.onMainTapped = { [weak self] in
+            self?.navigationController?.popToRootViewController(animated: true)
+        }
+        bottomBar.onResumeReadingTapped = { [weak self] in
+            self?.navigateToResumeReading()
+        }
+        bottomBar.onSettingsTapped = { [weak self] in
+            self?.navigationController?.pushViewController(SettingsViewController(), animated: true)
+        }
+        
+        updateResumeReadingButton()
+    }
+    
     private func loadFinishedArticles() {
         guard let userData = SwiftDataManager.shared.getUserData() else {
             showEmptyState()
@@ -40,6 +66,7 @@ class FinishedViewController: UIViewController {
         if articles.isEmpty {
             showEmptyState()
         }
+        updateResumeReadingButton()
     }
     
     private func showEmptyState() {
@@ -49,6 +76,22 @@ class FinishedViewController: UIViewController {
         emptyLabel.textColor = .gray
         emptyLabel.numberOfLines = 0
         tableView.backgroundView = emptyLabel
+    }
+    
+    private func updateResumeReadingButton() {
+        if let userData = SwiftDataManager.shared.getUserData() {
+            bottomBar.updateResumeReadingButton(isEnabled: !userData.inProgressArticleIDs.isEmpty)
+        }
+    }
+    
+    private func navigateToResumeReading() {
+        guard let userData = SwiftDataManager.shared.getUserData(),
+              let lastArticleID = userData.inProgressArticleIDs.last,
+              let article = ArticleManager.getArticles(forIDs: [lastArticleID]).first else {
+            return
+        }
+        let detailVC = ArticleViewController(article: article)
+        navigationController?.pushViewController(detailVC, animated: true)
     }
     
     private func removeArticle(at index: Int) {

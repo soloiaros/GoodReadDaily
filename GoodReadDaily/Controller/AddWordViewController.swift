@@ -1,11 +1,3 @@
-//
-//  AddWordViewController.swift
-//  GoodReadDaily
-//
-//  Created by Yaroslav Solovev on 7/9/25.
-//
-
-
 import UIKit
 import SwiftData
 
@@ -52,6 +44,11 @@ class AddWordViewController: UIViewController {
         setupNavigationBar()
         setupViews()
         setupTextFields()
+    }
+    
+    // New: Method to pre-fill word text field
+    func setInitialWord(_ word: String) {
+        wordTextField.text = word
     }
     
     private func setupNavigationBar() {

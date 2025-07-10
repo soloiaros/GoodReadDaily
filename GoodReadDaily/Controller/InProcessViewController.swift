@@ -3,11 +3,13 @@ import UIKit
 class InProcessViewController: UIViewController {
     private var articles: [Article] = []
     private let tableView = UITableView()
+    private let bottomBar = BottomNavigationBar()
     
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .systemGroupedBackground
         title = "Currently Reading"
+        setupBottomBar() // Moved before setupTableView
         setupTableView()
         loadInProgressArticles()
     }
@@ -19,7 +21,7 @@ class InProcessViewController: UIViewController {
             tableView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
             tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
             tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
-            tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
+            tableView.bottomAnchor.constraint(equalTo: bottomBar.topAnchor)
         ])
         
         tableView.dataSource = self
@@ -27,6 +29,30 @@ class InProcessViewController: UIViewController {
         tableView.register(ArticleTableViewCell.self, forCellReuseIdentifier: "ArticleCell")
         tableView.separatorStyle = .none
         tableView.backgroundColor = .clear
+    }
+    
+    private func setupBottomBar() {
+        bottomBar.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(bottomBar)
+        
+        NSLayoutConstraint.activate([
+            bottomBar.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            bottomBar.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            bottomBar.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
+            bottomBar.heightAnchor.constraint(equalToConstant: 60)
+        ])
+        
+        bottomBar.onMainTapped = { [weak self] in
+            self?.navigationController?.popToRootViewController(animated: true)
+        }
+        bottomBar.onResumeReadingTapped = { [weak self] in
+            self?.navigateToResumeReading()
+        }
+        bottomBar.onSettingsTapped = { [weak self] in
+            self?.navigationController?.pushViewController(SettingsViewController(), animated: true)
+        }
+        
+        updateResumeReadingButton()
     }
     
     private func loadInProgressArticles() {
@@ -41,6 +67,7 @@ class InProcessViewController: UIViewController {
         if articles.isEmpty {
             showEmptyState()
         }
+        updateResumeReadingButton()
     }
     
     private func showEmptyState() {
@@ -50,6 +77,22 @@ class InProcessViewController: UIViewController {
         emptyLabel.textColor = .gray
         emptyLabel.numberOfLines = 0
         tableView.backgroundView = emptyLabel
+    }
+    
+    private func updateResumeReadingButton() {
+        if let userData = SwiftDataManager.shared.getUserData() {
+            bottomBar.updateResumeReadingButton(isEnabled: !userData.inProgressArticleIDs.isEmpty)
+        }
+    }
+    
+    private func navigateToResumeReading() {
+        guard let userData = SwiftDataManager.shared.getUserData(),
+              let lastArticleID = userData.inProgressArticleIDs.last,
+              let article = ArticleManager.getArticles(forIDs: [lastArticleID]).first else {
+            return
+        }
+        let detailVC = ArticleViewController(article: article)
+        navigationController?.pushViewController(detailVC, animated: true)
     }
 }
 

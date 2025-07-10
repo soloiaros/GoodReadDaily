@@ -1,5 +1,8 @@
+
+
 import UIKit
 import FirebaseAuth
+import SwiftData
 
 final class ArticleViewController: UIViewController {
     private let article: Article
@@ -38,7 +41,8 @@ final class ArticleViewController: UIViewController {
         configure(with: article)
         updateReadButtonState()
         setupGestures()
-        markArticleAsInProgress() // Add article to inProgressArticleIDs when viewed
+        setupContextMenu() // New: Setup context menu
+        markArticleAsInProgress()
     }
     
     private func setupGestures() {
@@ -214,6 +218,35 @@ final class ArticleViewController: UIViewController {
         ])
     }
     
+    private func setupContextMenu() {
+        let addToDictionary = UIMenuItem(title: "Add to Dictionary", action: #selector(addToDictionaryTapped))
+        UIMenuController.shared.menuItems = [addToDictionary]
+    }
+    
+    override func canPerformAction(_ action: Selector, withSender sender: Any?) -> Bool {
+        if action == #selector(addToDictionaryTapped) {
+            if let selectedRange = contentTextView.selectedTextRange, !selectedRange.isEmpty {
+                return true
+            }
+            return false
+        }
+        return super.canPerformAction(action, withSender: sender)
+    }
+    
+    @objc private func addToDictionaryTapped() {
+        guard let selectedRange = contentTextView.selectedTextRange,
+              let selectedText = contentTextView.text(in: selectedRange)?.trimmingCharacters(in: .whitespaces) else {
+            return
+        }
+        
+        let addWordVC = AddWordViewController()
+        addWordVC.delegate = self
+        addWordVC.setInitialWord(selectedText)
+        
+        let navController = UINavigationController(rootViewController: addWordVC)
+        present(navController, animated: true)
+    }
+    
     private func configure(with article: Article) {
         title = article.title
         titleLabel.text = article.title
@@ -257,12 +290,10 @@ final class ArticleViewController: UIViewController {
         let articleID = article.id
         
         if userData.completedArticleIDs.contains(articleID) {
-            // Show confirmation before removing
             showDeleteConfirmationAlert { [weak self] shouldDelete in
                 guard let self = self else { return }
                 
                 if shouldDelete {
-                    // Remove article from completed
                     if let index = userData.completedArticleIDs.firstIndex(of: articleID) {
                         userData.completedArticleIDs.remove(at: index)
                         SwiftDataManager.shared.save()
@@ -271,7 +302,6 @@ final class ArticleViewController: UIViewController {
                 }
             }
         } else {
-            // Add article to completed and remove from in-progress if present
             userData.completedArticleIDs.append(articleID)
             if let index = userData.inProgressArticleIDs.firstIndex(of: articleID) {
                 userData.inProgressArticleIDs.remove(at: index)
@@ -308,6 +338,19 @@ final class ArticleViewController: UIViewController {
                 self.updateReadButtonState()
             }
         }
+    }
+}
+
+// New: Adopt AddWordDelegate protocol
+extension ArticleViewController: AddWordDelegate {
+    func didAddWord(_ word: SDDictionaryEntry) {
+        let alert = UIAlertController(
+            title: "Word Added",
+            message: "\(word.word) has been added to your dictionary.",
+            preferredStyle: .alert
+        )
+        alert.addAction(UIAlertAction(title: "OK", style: .default))
+        present(alert, animated: true)
     }
 }
 
@@ -393,3 +436,4 @@ class FontSizeControlView: UIView {
         onClose?()
     }
 }
+
