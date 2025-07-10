@@ -1,12 +1,13 @@
 import UIKit
+import FirebaseAuth
 
 final class ArticleViewController: UIViewController {
     private let article: Article
     private var currentFontSize: CGFloat = 18 {
-            didSet {
-                updateFontSizes()
-                fontSizeControlView?.updateSize(currentFontSize) // Добавляем эту строку
-            }
+        didSet {
+            updateFontSizes()
+            fontSizeControlView?.updateSize(currentFontSize)
+        }
     }
     
     // UI Elements
@@ -37,6 +38,7 @@ final class ArticleViewController: UIViewController {
         configure(with: article)
         updateReadButtonState()
         setupGestures()
+        markArticleAsInProgress() // Add article to inProgressArticleIDs when viewed
     }
     
     private func setupGestures() {
@@ -98,8 +100,6 @@ final class ArticleViewController: UIViewController {
     
     private func updateFontSizes() {
         contentTextView.font = UIFont.systemFont(ofSize: currentFontSize)
-        
-        // Обновляем размеры других элементов, если нужно
         titleLabel.font = UIFont.boldSystemFont(ofSize: currentFontSize + 6)
         subtitleLabel.font = UIFont.italicSystemFont(ofSize: currentFontSize - 2)
         authorLabel.font = UIFont.systemFont(ofSize: currentFontSize - 4)
@@ -225,8 +225,12 @@ final class ArticleViewController: UIViewController {
     }
     
     private func updateReadButtonState() {
-        let articleId = article.id
-        let isRead = UserDataManager.shared.userData.completedArticleIDs.contains(articleId)
+        guard let userData = SwiftDataManager.shared.getUserData() else {
+            readButton.setTitle("Mark as Read", for: .normal)
+            readButton.backgroundColor = .systemBlue
+            return
+        }
+        let isRead = userData.completedArticleIDs.contains(article.id)
         
         if isRead {
             readButton.setTitle("✓ Read", for: .normal)
@@ -237,34 +241,42 @@ final class ArticleViewController: UIViewController {
         }
     }
     
+    private func markArticleAsInProgress() {
+        guard let userData = SwiftDataManager.shared.getUserData(),
+              !userData.inProgressArticleIDs.contains(article.id) else {
+            return
+        }
+        userData.inProgressArticleIDs.append(article.id)
+        SwiftDataManager.shared.save()
+    }
+    
     @objc private func readButtonTapped() {
+        guard let userData = SwiftDataManager.shared.getUserData() else {
+            return
+        }
         let articleID = article.id
-        var completedArticles = UserDataManager.shared.userData.completedArticleIDs
         
-        if completedArticles.contains(articleID) {
-            // Показываем подтверждение перед удалением
+        if userData.completedArticleIDs.contains(articleID) {
+            // Show confirmation before removing
             showDeleteConfirmationAlert { [weak self] shouldDelete in
                 guard let self = self else { return }
                 
                 if shouldDelete {
-                    // Удаляем статью из прочитанных
-                    if let index = completedArticles.firstIndex(of: articleID) {
-                        completedArticles.remove(at: index)
-                        UserDataManager.shared.userData.completedArticleIDs = completedArticles
-                        UserDataManager.shared.save()
-                        
-                        // Анимация изменения состояния кнопки
-                        self.animateButtonChange()
+                    // Remove article from completed
+                    if let index = userData.completedArticleIDs.firstIndex(of: articleID) {
+                        userData.completedArticleIDs.remove(at: index)
+                        SwiftDataManager.shared.save()
+                        animateButtonChange()
                     }
                 }
             }
         } else {
-            // Добавляем статью в прочитанные без подтверждения
-            completedArticles.append(articleID)
-            UserDataManager.shared.userData.completedArticleIDs = completedArticles
-            UserDataManager.shared.save()
-            
-            // Анимация изменения состояния кнопки
+            // Add article to completed and remove from in-progress if present
+            userData.completedArticleIDs.append(articleID)
+            if let index = userData.inProgressArticleIDs.firstIndex(of: articleID) {
+                userData.inProgressArticleIDs.remove(at: index)
+            }
+            SwiftDataManager.shared.save()
             animateButtonChange()
         }
     }
@@ -381,4 +393,3 @@ class FontSizeControlView: UIView {
         onClose?()
     }
 }
-

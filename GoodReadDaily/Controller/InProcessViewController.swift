@@ -30,12 +30,12 @@ class InProcessViewController: UIViewController {
     }
     
     private func loadInProgressArticles() {
-        let inProgressIDs = UserDataManager.shared.userData.inProgressArticleIDs
-        articles = ArticleManager.loadArticles().filter { article in
-            inProgressIDs.contains(article.id)
+        guard let userData = SwiftDataManager.shared.getUserData() else {
+            showEmptyState()
+            return
         }
-        articles = articles.filter { !UserDataManager.shared.userData.completedArticleIDs.contains($0.id)
-        }
+        articles = ArticleManager.getArticles(forIDs: userData.inProgressArticleIDs)
+        articles = articles.filter { !userData.completedArticleIDs.contains($0.id) }
         tableView.reloadData()
         
         if articles.isEmpty {
@@ -49,17 +49,13 @@ class InProcessViewController: UIViewController {
         emptyLabel.textAlignment = .center
         emptyLabel.textColor = .gray
         emptyLabel.numberOfLines = 0
-        
         tableView.backgroundView = emptyLabel
     }
 }
 
 class ArticleTableViewCell: UITableViewCell {
-    private let titleLabel = UILabel()
-    private let subtitleLabel = UILabel()
-    
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
-        super.init(style: style, reuseIdentifier: reuseIdentifier)
+        super.init(style: .subtitle, reuseIdentifier: reuseIdentifier)
         setupCell()
     }
     
@@ -69,52 +65,37 @@ class ArticleTableViewCell: UITableViewCell {
     
     private func setupCell() {
         backgroundColor = .clear
-        selectionStyle = .none
-        
-        // Настройка контейнера
-        contentView.backgroundColor = UIColor(red: 0.96, green: 0.94, blue: 0.89, alpha: 1.0)
+        contentView.backgroundColor = UIColor(red: 0.96, green: 0.94, blue: 0.89, alpha: 1.0) // Light beige
         contentView.layer.cornerRadius = 12
         contentView.layer.masksToBounds = true
         
-        // Настройка заголовка
-        titleLabel.numberOfLines = 0
-        titleLabel.font = UIFont.systemFont(ofSize: 17, weight: .semibold)
-        titleLabel.setContentCompressionResistancePriority(.required, for: .vertical)
+        // Add margins around content
+        contentView.layoutMargins = UIEdgeInsets(top: 12, left: 16, bottom: 12, right: 16)
         
-        // Настройка подзаголовка
-        subtitleLabel.numberOfLines = 0
-        subtitleLabel.textColor = .darkGray
-        subtitleLabel.font = UIFont.systemFont(ofSize: 15)
-        subtitleLabel.setContentCompressionResistancePriority(.required, for: .vertical)
-        
-        // Стек для текстовых элементов
-        let textStack = UIStackView(arrangedSubviews: [titleLabel, subtitleLabel])
-        textStack.axis = .vertical
-        textStack.spacing = 4
-        textStack.alignment = .leading
-        
-        contentView.addSubview(textStack)
-        textStack.translatesAutoresizingMaskIntoConstraints = false
-        
-        NSLayoutConstraint.activate([
-            textStack.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 12),
-            textStack.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
-            textStack.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
-            textStack.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -12)
-        ])
-    }
-    
-    func configure(with article: Article) {
-        titleLabel.text = article.title
-        subtitleLabel.text = article.subtitle
+        // Configure text
+        textLabel?.numberOfLines = 0
+        textLabel?.font = UIFont.systemFont(ofSize: 17, weight: .semibold)
+        detailTextLabel?.numberOfLines = 0
+        detailTextLabel?.textColor = .darkGray
+        detailTextLabel?.font = UIFont.systemFont(ofSize: 15)
     }
     
     override func layoutSubviews() {
         super.layoutSubviews()
         
-        // Отступы между ячейками
+        // Set margins for the cell
         let margins = UIEdgeInsets(top: 8, left: 0, bottom: 8, right: 0)
         contentView.frame = contentView.frame.inset(by: margins)
+    }
+    
+    override func setSelected(_ selected: Bool, animated: Bool) {
+        super.setSelected(selected, animated: animated)
+        contentView.backgroundColor = UIColor(red: 0.96, green: 0.94, blue: 0.89, alpha: 1.0)
+    }
+    
+    override func setHighlighted(_ highlighted: Bool, animated: Bool) {
+        super.setHighlighted(highlighted, animated: animated)
+        contentView.backgroundColor = UIColor(red: 0.96, green: 0.94, blue: 0.89, alpha: 1.0)
     }
 }
 
