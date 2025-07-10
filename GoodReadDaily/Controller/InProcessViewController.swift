@@ -17,14 +17,16 @@ class InProcessViewController: UIViewController {
         tableView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
             tableView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
-            tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
+            tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
             tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
         ])
         
         tableView.dataSource = self
         tableView.delegate = self
-        tableView.register(UITableViewCell.self, forCellReuseIdentifier: "ArticleCell")
+        tableView.register(ArticleTableViewCell.self, forCellReuseIdentifier: "ArticleCell")
+        tableView.separatorStyle = .none
+        tableView.backgroundColor = .clear
     }
     
     private func loadInProgressArticles() {
@@ -52,19 +54,71 @@ class InProcessViewController: UIViewController {
     }
 }
 
+class ArticleTableViewCell: UITableViewCell {
+    override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
+        super.init(style: .subtitle, reuseIdentifier: reuseIdentifier)
+        setupCell()
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    private func setupCell() {
+        backgroundColor = .clear
+        contentView.backgroundColor = UIColor(red: 0.96, green: 0.94, blue: 0.89, alpha: 1.0) // светло-бежевый
+        contentView.layer.cornerRadius = 12
+        contentView.layer.masksToBounds = true
+        
+        // Добавляем отступы вокруг контента
+        contentView.layoutMargins = UIEdgeInsets(top: 12, left: 16, bottom: 12, right: 16)
+        
+        // Настройка текста
+        textLabel?.numberOfLines = 0
+        textLabel?.font = UIFont.systemFont(ofSize: 17, weight: .semibold)
+        detailTextLabel?.numberOfLines = 0
+        detailTextLabel?.textColor = .darkGray
+        detailTextLabel?.font = UIFont.systemFont(ofSize: 15)
+    }
+    
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        
+        // Устанавливаем отступы для ячейки
+        let margins = UIEdgeInsets(top: 8, left: 0, bottom: 8, right: 0)
+        contentView.frame = contentView.frame.inset(by: margins)
+    }
+    
+    override func setSelected(_ selected: Bool, animated: Bool) {
+        super.setSelected(selected, animated: animated)
+        contentView.backgroundColor = UIColor(red: 0.96, green: 0.94, blue: 0.89, alpha: 1.0)
+    }
+    
+    override func setHighlighted(_ highlighted: Bool, animated: Bool) {
+        super.setHighlighted(highlighted, animated: animated)
+        contentView.backgroundColor = UIColor(red: 0.96, green: 0.94, blue: 0.89, alpha: 1.0)
+    }
+}
+
 extension InProcessViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return articles.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "ArticleCell", for: indexPath)
+        let cell = tableView.dequeueReusableCell(withIdentifier: "ArticleCell", for: indexPath) as! ArticleTableViewCell
         let article = articles[indexPath.row]
-        var config = cell.defaultContentConfiguration()
-        config.text = article.title
-        config.secondaryText = article.subtitle
-        cell.contentConfiguration = config
+        cell.textLabel?.text = article.title
+        cell.detailTextLabel?.text = article.subtitle
         return cell
+    }
+    
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return UITableView.automaticDimension
+    }
+    
+    func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {
+        return 80
     }
 }
 
