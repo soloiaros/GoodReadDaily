@@ -37,6 +37,11 @@ class ArticleManager {
         return Array(filteredArticles.shuffled().prefix(count))
     }
     
+    static func getArticles(forIDs ids: [String]) -> [Article] {
+        let allArticles = loadArticles()
+        return allArticles.filter { ids.contains($0.id) }
+    }
+    
     private static func getArticlesWhenNoGenresSelected(count: Int, from pool: [Article]) -> [Article] {
         guard !pool.isEmpty else { return [] }
         
@@ -44,6 +49,6 @@ class ArticleManager {
             return pool.shuffled()
         }
         
-        return Array (pool.shuffled().prefix(count))
+        return Array(pool.shuffled().prefix(count))
     }
 }

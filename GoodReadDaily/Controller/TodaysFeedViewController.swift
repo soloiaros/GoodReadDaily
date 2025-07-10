@@ -5,7 +5,6 @@
 //  Created by Yaroslav Solovev on 7/6/25.
 //
 
-
 import UIKit
 
 final class TodaysFeedViewController: UIViewController {
@@ -36,21 +35,35 @@ final class TodaysFeedViewController: UIViewController {
     }
     
     private func loadUserArticles() {
-        if ArticleStorage.shouldRefreshArticles() {
-            refreshArticles()
-        } else if let storedArticles = ArticleStorage.getTodaysArticles() {
-            articles = storedArticles
+        guard let userData = SwiftDataManager.shared.getUserData() else {
+            showEmptyState()
+            return
+        }
+        // Load articles from todaysArticleIDs if available and no refresh needed
+        if !ArticleStorage.shouldRefreshArticles(), !userData.todaysArticleIDs.isEmpty {
+            articles = ArticleManager.getArticles(forIDs: userData.todaysArticleIDs)
             tableView.reloadData()
+            if articles.isEmpty {
+                refreshArticles() // Fallback if IDs don't match any articles
+            } else {
+                tableView.backgroundView = nil
+            }
         } else {
             refreshArticles()
         }
     }
     
     @objc private func refreshArticles() {
-        let genres = SwiftDataManager.shared.getUserData()?.preferences.genres ?? []
+        guard let userData = SwiftDataManager.shared.getUserData() else {
+            showEmptyState()
+            return
+        }
+        let genres = userData.preferences.genres
         let newArticles = ArticleManager.getRandomArticles(for: genres, count: 3)
         
-        ArticleStorage.storeTodaysArticles(newArticles)
+        userData.todaysArticleIDs = newArticles.map { $0.id }
+        userData.lastRefreshDate = Date() // Update refresh date
+        SwiftDataManager.shared.save()
         articles = newArticles
         
         tableView.reloadData()

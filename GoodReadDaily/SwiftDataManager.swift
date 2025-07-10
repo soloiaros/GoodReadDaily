@@ -1,4 +1,3 @@
-
 import Foundation
 import SwiftData
 import FirebaseAuth
@@ -18,7 +17,6 @@ class SwiftDataManager {
         }
     }
     
-    // Fetch or create user data for the current Firebase user
     @MainActor
     func getUserData() -> SDUserData? {
         guard let userId = Auth.auth().currentUser?.uid else { return nil }
@@ -30,7 +28,6 @@ class SwiftDataManager {
             if let userData = users.first {
                 return userData
             } else {
-                // Create new user data if none exists
                 let newUserData = SDUserData(userId: userId)
                 context.insert(newUserData)
                 try context.save()
@@ -42,7 +39,6 @@ class SwiftDataManager {
         }
     }
     
-    // Save changes to the context
     @MainActor
     func save() {
         guard let context = modelContext else { return }
@@ -53,7 +49,6 @@ class SwiftDataManager {
         }
     }
     
-    // Reset user data (for testing or initialization, not used on logout)
     @MainActor
     func resetUserData() {
         guard let userId = Auth.auth().currentUser?.uid else { return }

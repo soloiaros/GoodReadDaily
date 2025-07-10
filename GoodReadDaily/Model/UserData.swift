@@ -6,7 +6,6 @@
 //
 
 
-
 import Foundation
 import SwiftData
 
@@ -15,13 +14,17 @@ class SDUserData {
     @Attribute(.unique) var userId: String // Links to Firebase user ID
     var completedArticleIDs: [String]
     var inProgressArticleIDs: [String]
+    var todaysArticleIDs: [String]
+    var lastRefreshDate: Date? // Added for user-specific refresh tracking
     var savedWords: [SDDictionaryEntry]
     var preferences: SDUserPreferences
     
-    init(userId: String, completedArticleIDs: [String] = [], inProgressArticleIDs: [String] = [], savedWords: [SDDictionaryEntry] = [], preferences: SDUserPreferences = SDUserPreferences()) {
+    init(userId: String, completedArticleIDs: [String] = [], inProgressArticleIDs: [String] = [], todaysArticleIDs: [String] = [], lastRefreshDate: Date? = nil, savedWords: [SDDictionaryEntry] = [], preferences: SDUserPreferences = SDUserPreferences()) {
         self.userId = userId
         self.completedArticleIDs = completedArticleIDs
         self.inProgressArticleIDs = inProgressArticleIDs
+        self.todaysArticleIDs = todaysArticleIDs
+        self.lastRefreshDate = lastRefreshDate
         self.savedWords = savedWords
         self.preferences = preferences
     }

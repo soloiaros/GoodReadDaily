@@ -1,4 +1,3 @@
-
 import UIKit
 
 class GenreSelectionViewController: UIViewController {
@@ -116,10 +115,9 @@ class GenreSelectionViewController: UIViewController {
         if let userData = SwiftDataManager.shared.getUserData() {
             userData.preferences.genres = genres
             userData.preferences.hasSeenGenreScreen = true
-            SwiftDataManager.shared.save()
-            
             let todaysArticles = ArticleManager.getRandomArticles(for: genres, count: 3)
-            ArticleStorage.storeTodaysArticles(todaysArticles)
+            userData.todaysArticleIDs = todaysArticles.map { $0.id }
+            SwiftDataManager.shared.save()
             
             let mainVC = MainViewController()
             let navController = UINavigationController(rootViewController: mainVC)
