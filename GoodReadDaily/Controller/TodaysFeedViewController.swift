@@ -110,7 +110,6 @@ extension TodaysFeedViewController: UITableViewDelegate {
             userData.inProgressArticleIDs.append(selectedArticleID)
             SwiftDataManager.shared.save()
         }
-        
         let detailVC = ArticleViewController(article: selectedArticle)
         navigationController?.pushViewController(detailVC, animated: true)
     }

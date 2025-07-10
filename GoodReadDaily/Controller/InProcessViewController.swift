@@ -30,12 +30,12 @@ class InProcessViewController: UIViewController {
     }
     
     private func loadInProgressArticles() {
-        let inProgressIDs = UserDataManager.shared.userData.inProgressArticleIDs
-        articles = ArticleManager.loadArticles().filter { article in
-            inProgressIDs.contains(article.id)
+        guard let userData = SwiftDataManager.shared.getUserData() else {
+            showEmptyState()
+            return
         }
-        articles = articles.filter { !UserDataManager.shared.userData.completedArticleIDs.contains($0.id)
-        }
+        articles = ArticleManager.getArticles(forIDs: userData.inProgressArticleIDs)
+        articles = articles.filter { !userData.completedArticleIDs.contains($0.id) }
         tableView.reloadData()
         
         if articles.isEmpty {
@@ -49,7 +49,6 @@ class InProcessViewController: UIViewController {
         emptyLabel.textAlignment = .center
         emptyLabel.textColor = .gray
         emptyLabel.numberOfLines = 0
-        
         tableView.backgroundView = emptyLabel
     }
 }
@@ -66,14 +65,14 @@ class ArticleTableViewCell: UITableViewCell {
     
     private func setupCell() {
         backgroundColor = .clear
-        contentView.backgroundColor = UIColor(red: 0.96, green: 0.94, blue: 0.89, alpha: 1.0) // светло-бежевый
+        contentView.backgroundColor = UIColor(red: 0.96, green: 0.94, blue: 0.89, alpha: 1.0) // Light beige
         contentView.layer.cornerRadius = 12
         contentView.layer.masksToBounds = true
         
-        // Добавляем отступы вокруг контента
+        // Add margins around content
         contentView.layoutMargins = UIEdgeInsets(top: 12, left: 16, bottom: 12, right: 16)
         
-        // Настройка текста
+        // Configure text
         textLabel?.numberOfLines = 0
         textLabel?.font = UIFont.systemFont(ofSize: 17, weight: .semibold)
         detailTextLabel?.numberOfLines = 0
@@ -84,7 +83,7 @@ class ArticleTableViewCell: UITableViewCell {
     override func layoutSubviews() {
         super.layoutSubviews()
         
-        // Устанавливаем отступы для ячейки
+        // Set margins for the cell
         let margins = UIEdgeInsets(top: 8, left: 0, bottom: 8, right: 0)
         contentView.frame = contentView.frame.inset(by: margins)
     }

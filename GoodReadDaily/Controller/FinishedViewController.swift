@@ -28,8 +28,11 @@ class FinishedViewController: UIViewController {
     }
     
     private func loadFinishedArticles() {
-        let completedIDs = UserDataManager.shared.userData.completedArticleIDs
-        articles = ArticleManager.loadArticles().filter { completedIDs.contains($0.id) }
+        guard let userData = SwiftDataManager.shared.getUserData() else {
+            showEmptyState()
+            return
+        }
+        articles = ArticleManager.getArticles(forIDs: userData.completedArticleIDs)
         tableView.reloadData()
         
         if articles.isEmpty {
@@ -43,7 +46,6 @@ class FinishedViewController: UIViewController {
         emptyLabel.textAlignment = .center
         emptyLabel.textColor = .gray
         emptyLabel.numberOfLines = 0
-        
         tableView.backgroundView = emptyLabel
     }
     
@@ -51,9 +53,10 @@ class FinishedViewController: UIViewController {
         let articleId = articles[index].id
         articles.remove(at: index)
         
-        if let indexToRemove = UserDataManager.shared.userData.completedArticleIDs.firstIndex(of: articleId) {
-            UserDataManager.shared.userData.completedArticleIDs.remove(at: indexToRemove)
-            UserDataManager.shared.save()
+        if let userData = SwiftDataManager.shared.getUserData(),
+           let indexToRemove = userData.completedArticleIDs.firstIndex(of: articleId) {
+            userData.completedArticleIDs.remove(at: indexToRemove)
+            SwiftDataManager.shared.save()
         }
         
         tableView.reloadData()
