@@ -1,15 +1,10 @@
-//
-//  DictionaryViewController.swift
-//  GoodReadDaily
-//
-//  Created by Yaroslav Solovev on 7/6/25.
-//
 
 import UIKit
+import SwiftData
 
 class DictionaryViewController: UIViewController {
     private var tableView: UITableView!
-    private var savedWords: [DictionaryEntry] = []
+    private var savedWords: [SDDictionaryEntry] = []
     private var floatingButton: FloatingActionButton!
     
     override func viewDidLoad() {
@@ -44,14 +39,10 @@ class DictionaryViewController: UIViewController {
     }
     
     private func loadSavedWords() {
-        if let userData = UserDefaults.standard.data(forKey: "userData") {
-            let decoder = JSONDecoder()
-            if let decoder = try? decoder.decode(UserData.self, from: userData) {
-                savedWords = decoder.savedWords.sorted {
-                    $0.dateAdded > $1.dateAdded }
-                tableView.reloadData()
-                showEmptyState()
-            }
+        if let userData = SwiftDataManager.shared.getUserData() {
+            savedWords = userData.savedWords.sorted { $0.dateAdded > $1.dateAdded }
+            tableView.reloadData()
+            showEmptyState()
         }
     }
     
@@ -99,7 +90,6 @@ extension DictionaryViewController: UITableViewDataSource, UITableViewDelegate {
         let cell = tableView.dequeueReusableCell(withIdentifier: "WordCell", for: indexPath)
         let wordEntry = savedWords[indexPath.row]
         
-        // Configure cell with word and context if available
         if let context = wordEntry.context {
             cell.textLabel?.text = "\(wordEntry.word) - \(context)"
         } else {
@@ -107,8 +97,7 @@ extension DictionaryViewController: UITableViewDataSource, UITableViewDelegate {
         }
         
         cell.textLabel?.numberOfLines = 0
-        cell.accessoryType = .disclosureIndicator // For future clickability
-        
+        cell.accessoryType = .disclosureIndicator
         return cell
     }
     
@@ -124,22 +113,16 @@ extension DictionaryViewController: UITableViewDataSource, UITableViewDelegate {
         return true
     }
     
-    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
-        
-    }
-    
     func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
         let deleteAction = UIContextualAction(style: .destructive, title: nil) { [weak self] (_, _, completion) in
-            // Show confirmation before deleting
             self?.showDeleteConfirmation(for: indexPath, completion: completion)
         }
         
-        // Customize the delete action
         deleteAction.image = UIImage(systemName: "trash.fill")
         deleteAction.backgroundColor = .systemRed
         
         let configuration = UISwipeActionsConfiguration(actions: [deleteAction])
-        configuration.performsFirstActionWithFullSwipe = false // Prevent full-swipe deletion
+        configuration.performsFirstActionWithFullSwipe = false
         return configuration
     }
 
@@ -165,30 +148,23 @@ extension DictionaryViewController: UITableViewDataSource, UITableViewDelegate {
     private func deleteWord(at indexPath: IndexPath) {
         guard indexPath.row < savedWords.count else { return }
         
-        // 1. Get the word to delete (for undo functionality)
         let deletedWord = savedWords[indexPath.row]
-        
-        // 2. Remove from data source
         savedWords.remove(at: indexPath.row)
         
-        // 3. Update persistent storage
-        UserDataManager.shared.userData.savedWords = savedWords
-        UserDataManager.shared.save()
+        if let userData = SwiftDataManager.shared.getUserData() {
+            userData.savedWords = savedWords
+            SwiftDataManager.shared.save()
+        }
         
-        // 4. Update table view with animation
         tableView.performBatchUpdates({
             tableView.deleteRows(at: [indexPath], with: .left)
         }, completion: { _ in
-            // 5. Show empty state if needed
             self.showEmptyState()
-            
-            // 6. Show undo snackbar (optional)
             self.showUndoOption(for: deletedWord, originalIndexPath: indexPath)
         })
     }
     
-    private func showUndoOption(for word: DictionaryEntry, originalIndexPath: IndexPath) {
-        // Create a snackbar-like view
+    private func showUndoOption(for word: SDDictionaryEntry, originalIndexPath: IndexPath) {
         let undoView = UIView()
         undoView.backgroundColor = .systemGray5
         undoView.layer.cornerRadius = 8
@@ -222,11 +198,9 @@ extension DictionaryViewController: UITableViewDataSource, UITableViewDelegate {
             undoButton.centerYAnchor.constraint(equalTo: undoView.centerYAnchor)
         ])
         
-        // Store the deleted word and its original position
         undoView.tag = originalIndexPath.row
         objc_setAssociatedObject(undoView, &AssociatedKeys.deletedWord, word, .OBJC_ASSOCIATION_RETAIN)
         
-        // Auto-dismiss after 3 seconds
         DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
             UIView.animate(withDuration: 0.3, animations: {
                 undoView.alpha = 0
@@ -238,38 +212,35 @@ extension DictionaryViewController: UITableViewDataSource, UITableViewDelegate {
 
     @objc private func undoDelete(_ sender: UIButton) {
         guard let undoView = sender.superview,
-              let word = objc_getAssociatedObject(undoView, &AssociatedKeys.deletedWord) as? DictionaryEntry else {
+              let word = objc_getAssociatedObject(undoView, &AssociatedKeys.deletedWord) as? SDDictionaryEntry else {
             return
         }
         
         let originalPosition = undoView.tag
-        
-        // Insert back at original position
         savedWords.insert(word, at: originalPosition)
         
-        // Update persistent storage
-        UserDataManager.shared.userData.savedWords = savedWords
-        UserDataManager.shared.save()
+        if let userData = SwiftDataManager.shared.getUserData() {
+            userData.savedWords = savedWords
+            SwiftDataManager.shared.save()
+        }
         
-        // Update table view
         tableView.insertRows(at: [IndexPath(row: originalPosition, section: 0)], with: .automatic)
-        
-        // Remove the undo view
         undoView.removeFromSuperview()
-        
-        // Hide empty state if it was shown
         showEmptyState()
     }
 
-    // Helper for associated objects
     private struct AssociatedKeys {
         static var deletedWord = "deletedWord"
     }
 }
 
 extension DictionaryViewController: AddWordDelegate {
-    func didAddWord(_ word: DictionaryEntry) {
+    func didAddWord(_ word: SDDictionaryEntry) {
         savedWords.insert(word, at: 0)
+        if let userData = SwiftDataManager.shared.getUserData() {
+            userData.savedWords = savedWords
+            SwiftDataManager.shared.save()
+        }
         tableView.beginUpdates()
         tableView.insertRows(at: [IndexPath(row: 0, section: 0)], with: .automatic)
         tableView.endUpdates()
@@ -277,12 +248,3 @@ extension DictionaryViewController: AddWordDelegate {
         showEmptyState()
     }
 }
-
-
-
-// for word adding implementation:
-/*
- // When adding a word to dictionary
- let newEntry = DictionaryEntry(word: selectedWord, context: surroundingText)
- UserDefaultsHelper.addDictionaryEntry(newEntry)
- */

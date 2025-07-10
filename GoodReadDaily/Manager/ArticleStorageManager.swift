@@ -6,37 +6,27 @@
 //
 
 import Foundation
+import SwiftData
+import FirebaseAuth
 
 class ArticleStorage {
-    private static let lastAssignmentDateKey = "lastArticleAssignmentDate"
-    private static let todaysArticlesKey = "todaysArticles"
-    
-    static func storeTodaysArticles(_ articles: [Article]) {
-        let encoder = JSONEncoder()
-        if let encoded = try? encoder.encode(articles) {
-            UserDefaults.standard.set(encoded, forKey: todaysArticlesKey)
-            UserDefaults.standard.set(Date(), forKey: lastAssignmentDateKey)
-        }
-    }
-    
-    static func getTodaysArticles() -> [Article]? {
-        // Check if we need new articles (crossed midnight)
-        if shouldRefreshArticles() {
-            return nil
-        }
-        
-        // Return stored articles if available
-        if let data = UserDefaults.standard.data(forKey: todaysArticlesKey) {
-            let decoder = JSONDecoder()
-            return try? decoder.decode([Article].self, from: data)
-        }
-        return nil
-    }
-    
+    @MainActor
     static func shouldRefreshArticles() -> Bool {
-        guard let lastDate = UserDefaults.standard.object(forKey: lastAssignmentDateKey) as? Date else {
-            return true
+        guard let userData = SwiftDataManager.shared.getUserData() else {
+            return true // Refresh if no user data (e.g., not logged in)
         }
-        return !Calendar.current.isDateInToday(lastDate)
+        guard let lastRefreshDate = userData.lastRefreshDate else {
+            return true // Refresh if no previous refresh date
+        }
+        return !Calendar.current.isDateInToday(lastRefreshDate)
+    }
+    
+    @MainActor
+    static func updateRefreshTimestamp() {
+        guard let userData = SwiftDataManager.shared.getUserData() else {
+            return
+        }
+        userData.lastRefreshDate = Date()
+        SwiftDataManager.shared.save()
     }
 }

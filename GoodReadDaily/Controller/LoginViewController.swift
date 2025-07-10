@@ -4,7 +4,10 @@
 //
 //  Created by Olga Eliseeva on 09.07.2025.
 //
+
+
 import UIKit
+import FirebaseAuth
 
 class LoginViewController: UIViewController {
     private let emailField = UITextField()
@@ -32,14 +35,12 @@ class LoginViewController: UIViewController {
         view.backgroundColor = .systemBackground
         title = "Login"
         
-        // Configure buttons
         loginButton.setTitle("Sign In", for: .normal)
         loginButton.addTarget(self, action: #selector(signInTapped), for: .touchUpInside)
         
         registerButton.setTitle("Create Account", for: .normal)
         registerButton.addTarget(self, action: #selector(registerTapped), for: .touchUpInside)
         
-        // Create stack view
         let stackView = UIStackView(arrangedSubviews: [emailField, passwordField, loginButton, registerButton])
         stackView.axis = .vertical
         stackView.spacing = 16
@@ -47,7 +48,6 @@ class LoginViewController: UIViewController {
         
         view.addSubview(stackView)
         
-        // Set constraints
         NSLayoutConstraint.activate([
             stackView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             stackView.centerYAnchor.constraint(equalTo: view.centerYAnchor),
@@ -62,13 +62,12 @@ class LoginViewController: UIViewController {
             return
         }
         
-        AuthManager.shared.signIn(email: email, password: password) { [weak self] result in
+        Auth.auth().signIn(withEmail: email, password: password) { [weak self] result, error in
             DispatchQueue.main.async {
-                switch result {
-                case .success:
-                    self?.routeAfterLogin()
-                case .failure(let error):
+                if let error = error {
                     self?.showError(error)
+                } else {
+                    self?.routeAfterLogin()
                 }
             }
         }
@@ -79,16 +78,18 @@ class LoginViewController: UIViewController {
         registerVC.onRegistrationSuccess = { [weak self] email, password in
             self?.emailField.text = email
             self?.passwordField.text = password
-            self?.signInTapped() // Automatically sign in after registration
+            self?.signInTapped()
         }
         navigationController?.pushViewController(registerVC, animated: true)
     }
     
     private func routeAfterLogin() {
-        UserDataManager.shared.reset()
-
-        let prefs = UserDataManager.shared.userData.preferences
-        let rootVC = prefs.hasSeenGenreScreen ? MainViewController() : GenreSelectionViewController()
+        let rootVC: UIViewController
+        if let userData = SwiftDataManager.shared.getUserData() {
+            rootVC = userData.preferences.hasSeenGenreScreen ? MainViewController() : GenreSelectionViewController()
+        } else {
+            rootVC = GenreSelectionViewController()
+        }
         let navController = UINavigationController(rootViewController: rootVC)
         navController.modalPresentationStyle = .fullScreen
         present(navController, animated: true)

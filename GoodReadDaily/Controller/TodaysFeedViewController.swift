@@ -31,28 +31,39 @@ final class TodaysFeedViewController: UIViewController {
         
         tableView.dataSource = self
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: "ArticleCell")
-            
         tableView.delegate = self
     }
     
     private func loadUserArticles() {
-        if ArticleStorage.shouldRefreshArticles() {
-            refreshArticles()
+        guard let userData = SwiftDataManager.shared.getUserData() else {
+            showEmptyState()
+            return
         }
-        else if let storedArticles = ArticleStorage.getTodaysArticles() {
-            articles = storedArticles
+        // Load articles from todaysArticleIDs if available and no refresh needed
+        if !ArticleStorage.shouldRefreshArticles(), !userData.todaysArticleIDs.isEmpty {
+            articles = ArticleManager.getArticles(forIDs: userData.todaysArticleIDs)
             tableView.reloadData()
-        }
-        else {
+            if articles.isEmpty {
+                refreshArticles() // Fallback if IDs don't match any articles
+            } else {
+                tableView.backgroundView = nil
+            }
+        } else {
             refreshArticles()
         }
     }
     
     @objc private func refreshArticles() {
-        let genres = UserDataManager.shared.userData.preferences.genres
+        guard let userData = SwiftDataManager.shared.getUserData() else {
+            showEmptyState()
+            return
+        }
+        let genres = userData.preferences.genres
         let newArticles = ArticleManager.getRandomArticles(for: genres, count: 3)
         
-        ArticleStorage.storeTodaysArticles(newArticles)
+        userData.todaysArticleIDs = newArticles.map { $0.id }
+        userData.lastRefreshDate = Date() // Update refresh date
+        SwiftDataManager.shared.save()
         articles = newArticles
         
         tableView.reloadData()
@@ -69,27 +80,17 @@ final class TodaysFeedViewController: UIViewController {
         emptyLabel.textAlignment = .center
         emptyLabel.numberOfLines = 0
         emptyLabel.textColor = .gray
-        
         tableView.backgroundView = emptyLabel
     }
 }
 
 extension TodaysFeedViewController: UITableViewDataSource {
-    func tableView(
-        _ tableView: UITableView,
-        numberOfRowsInSection section: Int
-    ) -> Int {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return articles.count
     }
     
-    func tableView(
-        _ tableView: UITableView,
-        cellForRowAt indexPath: IndexPath
-    ) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(
-            withIdentifier: "ArticleCell",
-            for: indexPath
-        )
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: "ArticleCell", for: indexPath)
         let article = articles[indexPath.row]
         var config = cell.defaultContentConfiguration()
         config.text = article.title
@@ -104,9 +105,10 @@ extension TodaysFeedViewController: UITableViewDelegate {
         tableView.deselectRow(at: indexPath, animated: true)
         let selectedArticle = articles[indexPath.row]
         let selectedArticleID = selectedArticle.id
-        if !UserDataManager.shared.userData.inProgressArticleIDs.contains(selectedArticleID) {
-            UserDataManager.shared.userData.inProgressArticleIDs.append(selectedArticleID)
-            UserDataManager.shared.save()
+        if let userData = SwiftDataManager.shared.getUserData(),
+           !userData.inProgressArticleIDs.contains(selectedArticleID) {
+            userData.inProgressArticleIDs.append(selectedArticleID)
+            SwiftDataManager.shared.save()
         }
         
         let detailVC = ArticleViewController(article: selectedArticle)
