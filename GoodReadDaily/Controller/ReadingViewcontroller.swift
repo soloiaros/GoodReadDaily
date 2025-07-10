@@ -63,6 +63,17 @@ final class ArticleViewController: UIViewController {
         subtitleLabel.textColor = .gray
         subtitleLabel.numberOfLines = 0
         contentView.addSubview(subtitleLabel)
+    
+        
+        // ID Label
+        idLabel.font = Ofont
+        idLabel.textColor = .lightGray
+        contentView.addSubview(idLabel)
+        
+        // Content Label
+        contentLabel.font = tinos_reg
+        contentLabel.numberOfLines = 0
+        contentView.addSubview(contentLabel)
         
         // Author Label
         authorLabel.font = mont_light
@@ -75,16 +86,6 @@ final class ArticleViewController: UIViewController {
         genreLabel.textColor = .darkGray
         genreLabel.textAlignment = .right
         contentView.addSubview(genreLabel)
-        
-        // ID Label
-        idLabel.font = Ofont
-        idLabel.textColor = .lightGray
-        contentView.addSubview(idLabel)
-        
-        // Content Label
-        contentLabel.font = tinos_reg
-        contentLabel.numberOfLines = 0
-        contentView.addSubview(contentLabel)
         
         // Read Button
         var color = UIColor.systemBlue
@@ -127,6 +128,14 @@ final class ArticleViewController: UIViewController {
             subtitleLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
             subtitleLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
             
+            idLabel.topAnchor.constraint(equalTo: genreLabel.bottomAnchor, constant: 0),
+            idLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
+            idLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
+            
+            contentLabel.topAnchor.constraint(equalTo: idLabel.bottomAnchor, constant: 16),
+            contentLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
+            contentLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
+            
             authorLabel.topAnchor.constraint(equalTo: subtitleLabel.bottomAnchor, constant: 8),
             authorLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
             authorLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
@@ -135,14 +144,6 @@ final class ArticleViewController: UIViewController {
             genreLabel.topAnchor.constraint(equalTo: authorLabel.bottomAnchor, constant: 4),
             genreLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
             genreLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
-            
-            idLabel.topAnchor.constraint(equalTo: genreLabel.bottomAnchor, constant: 0),
-            idLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
-            idLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
-            
-            contentLabel.topAnchor.constraint(equalTo: idLabel.bottomAnchor, constant: 16),
-            contentLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
-            contentLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
             
             readButton.topAnchor.constraint(equalTo: contentLabel.bottomAnchor, constant: 24),
             readButton.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
