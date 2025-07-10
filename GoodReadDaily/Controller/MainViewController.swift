@@ -1,10 +1,3 @@
-//
-//  ViewController.swift
-//  GoodReadDaily
-//
-//  Created by Yaroslav Solovev on 7/4/25.
-//
-
 import UIKit
 import FirebaseAuth
 
@@ -13,17 +6,22 @@ class MainViewController: UIViewController {
     private let todaysFeedButton = MainWidgetButton(
         title: "Today's Feed",
         subtitle: "Your 3 fresh articles are ready!",
-        isLarge: true,
+        isLarge: true
     )
     
     private let inProcessButton = MainWidgetButton(
         title: "In Process",
-        subtitle: "Continue reading",
+        subtitle: "Continue reading"
+    )
+    
+    private let finishedArticlesButton = MainWidgetButton(
+        title: "Finished Articles",
+        subtitle: "View your completed readings"
     )
     
     private let dictionaryButton = MainWidgetButton(
         title: "Dictionary",
-        subtitle: "Words you saved",
+        subtitle: "Words you saved"
     )
     
     private let logoutButton: UIButton = {
@@ -44,7 +42,12 @@ class MainViewController: UIViewController {
     }
     
     private func setupLayout() {
-        let stackView = UIStackView(arrangedSubviews: [todaysFeedButton, inProcessButton, dictionaryButton])
+        let stackView = UIStackView(arrangedSubviews: [
+            todaysFeedButton,
+            inProcessButton,
+            finishedArticlesButton,
+            dictionaryButton
+        ])
         stackView.axis = .vertical
         stackView.spacing = 20
         stackView.translatesAutoresizingMaskIntoConstraints = false
@@ -63,6 +66,7 @@ class MainViewController: UIViewController {
     private func setupActions() {
         todaysFeedButton.addTarget(self, action: #selector(openTodaysFeed), for: .touchUpInside)
         inProcessButton.addTarget(self, action: #selector(openInProcess), for: .touchUpInside)
+        finishedArticlesButton.addTarget(self, action: #selector(openFinishedArticles), for: .touchUpInside)
         dictionaryButton.addTarget(self, action: #selector(openDictionary), for: .touchUpInside)
         logoutButton.addTarget(self, action: #selector(handleLogout), for: .touchUpInside)
     }
@@ -76,6 +80,12 @@ class MainViewController: UIViewController {
     @objc private func openInProcess() {
         print("process btn")
         let vc = InProcessViewController()
+        navigationController?.pushViewController(vc, animated: true)
+    }
+    
+    @objc private func openFinishedArticles() {
+        print("Finished articles btn")
+        let vc = FinishedViewController()
         navigationController?.pushViewController(vc, animated: true)
     }
 
@@ -130,20 +140,20 @@ class MainWidgetButton: UIControl {
         titleLabelView.font = UIFont.systemFont(ofSize: isLarge ? 22 : 18, weight: .bold)
         titleLabelView.textColor = .label
         titleLabelView.numberOfLines = 0
-        titleLabelView.isUserInteractionEnabled = false // Add this
+        titleLabelView.isUserInteractionEnabled = false
         
         // Subtitle
         subtitleLabelView.text = subtitle
         subtitleLabelView.font = UIFont.systemFont(ofSize: isLarge ? 16 : 14)
         subtitleLabelView.textColor = .darkGray
         subtitleLabelView.numberOfLines = 0
-        subtitleLabelView.isUserInteractionEnabled = false // Add this
+        subtitleLabelView.isUserInteractionEnabled = false
         
         // Stack
         contentStack.axis = .vertical
         contentStack.spacing = 6
         contentStack.translatesAutoresizingMaskIntoConstraints = false
-        contentStack.isUserInteractionEnabled = false // Add this
+        contentStack.isUserInteractionEnabled = false
         contentStack.addArrangedSubview(titleLabelView)
         contentStack.addArrangedSubview(subtitleLabelView)
         

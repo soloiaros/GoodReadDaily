@@ -11,7 +11,7 @@ final class ArticleViewController: UIViewController {
     private let authorLabel = UILabel()
     private let genreLabel = UILabel()
     private let idLabel = UILabel()
-    private let contentTextView = UITextView() // Заменяем UILabel на UITextView
+    private let contentTextView = UITextView()
     private let readButton = UIButton(type: .system)
     
     init(article: Article) {
@@ -28,7 +28,7 @@ final class ArticleViewController: UIViewController {
         view.backgroundColor = .white
         setupUI()
         configure(with: article)
-        setupReadButtonInitialState()
+        updateReadButtonState()
     }
     
     private func setupUI() {
@@ -78,17 +78,17 @@ final class ArticleViewController: UIViewController {
         idLabel.textColor = .lightGray
         contentView.addSubview(idLabel)
         
-        // Content TextView (заменяем UILabel)
+        // Content TextView
         contentTextView.font = UIFont.systemFont(ofSize: 18)
         contentTextView.isEditable = false
-        contentTextView.isSelectable = true // Разрешаем выделение текста
-        contentTextView.isScrollEnabled = false // Отключаем скролл, так как у нас есть scrollView
+        contentTextView.isSelectable = true
+        contentTextView.isScrollEnabled = false
         contentTextView.textContainerInset = .zero
         contentTextView.textContainer.lineFragmentPadding = 0
-        contentTextView.dataDetectorTypes = .all // Распознавание ссылок, номеров и т.д.
+        contentTextView.dataDetectorTypes = .all
         contentView.addSubview(contentTextView)
         
-        //Basic Settings
+        // Read Button Settings
         readButton.setTitle("Mark as Read", for: .normal)
         readButton.titleLabel?.font = UIFont.systemFont(ofSize: 18, weight: .medium)
         readButton.backgroundColor = .systemBlue
@@ -149,54 +149,78 @@ final class ArticleViewController: UIViewController {
         contentTextView.text = article.content
     }
     
-    private func setupReadButtonInitialState() {
+    private func updateReadButtonState() {
         let articleId = article.id
+        let isRead = UserDataManager.shared.userData.completedArticleIDs.contains(articleId)
         
-        if UserDataManager.shared.userData.completedArticleIDs.contains(articleId) {
-            // Статья уже прочитана - настраиваем кнопку как "прочитано"
+        if isRead {
             readButton.setTitle("✓ Read", for: .normal)
             readButton.backgroundColor = .systemGreen
-            readButton.isEnabled = false
         } else {
-            // Статья нет в прочитанных - обычное состояние
             readButton.setTitle("Mark as Read", for: .normal)
             readButton.backgroundColor = .systemBlue
-            readButton.isEnabled = true
         }
     }
     
     @objc private func readButtonTapped() {
-        // Визуальная обратная связь
-        readButton.setTitle("✓ Read", for: .normal)
-        readButton.backgroundColor = .systemGreen
+        let articleID = article.id
+        var completedArticles = UserDataManager.shared.userData.completedArticleIDs
         
+        if completedArticles.contains(articleID) {
+            // Показываем подтверждение перед удалением
+            showDeleteConfirmationAlert { [weak self] shouldDelete in
+                guard let self = self else { return }
+                
+                if shouldDelete {
+                    // Удаляем статью из прочитанных
+                    if let index = completedArticles.firstIndex(of: articleID) {
+                        completedArticles.remove(at: index)
+                        UserDataManager.shared.userData.completedArticleIDs = completedArticles
+                        UserDataManager.shared.save()
+                        
+                        // Анимация изменения состояния кнопки
+                        self.animateButtonChange()
+                    }
+                }
+            }
+        } else {
+            // Добавляем статью в прочитанные без подтверждения
+            completedArticles.append(articleID)
+            UserDataManager.shared.userData.completedArticleIDs = completedArticles
+            UserDataManager.shared.save()
+            
+            // Анимация изменения состояния кнопки
+            animateButtonChange()
+        }
+    }
+    
+    private func showDeleteConfirmationAlert(completion: @escaping (Bool) -> Void) {
+        let alert = UIAlertController(
+            title: "Remove from read articles?",
+            message: "Are you sure you want to remove this article from your read list?",
+            preferredStyle: .alert
+        )
+        
+        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel) { _ in
+            completion(false)
+        })
+        
+        alert.addAction(UIAlertAction(title: "OK", style: .default) { _ in
+            completion(true)
+        })
+        
+        present(alert, animated: true)
+    }
+    
+    private func animateButtonChange() {
         UIView.animate(withDuration: 0.3, animations: {
             self.readButton.transform = CGAffineTransform(scaleX: 1.05, y: 1.05)
         }) { _ in
             UIView.animate(withDuration: 0.3) {
                 self.readButton.transform = .identity
+                self.updateReadButtonState()
             }
         }
-        
-        let articleID = article.id
-        if UserDataManager.shared.userData.completedArticleIDs.contains(articleID) {
-            showAlreadyReadAlert()
-            return
-        }
-        else {
-            UserDataManager.shared.userData.completedArticleIDs.append(articleID)
-            UserDataManager.shared.save()
-            return
-        }
-    }
-        
-    private func showAlreadyReadAlert() {
-        let alert = UIAlertController(
-            title: "This article is already read",
-            message: "You have marked this article as read before. No need to mark it again!",
-            preferredStyle: .alert
-        )
-        alert.addAction(UIAlertAction(title: "OK", style: .default))
-        present(alert, animated: true)
     }
 }
+
