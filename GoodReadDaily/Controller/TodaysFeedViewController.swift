@@ -9,11 +9,11 @@ import UIKit
 
 final class TodaysFeedViewController: UIViewController {
     private var articles: [Article] = []
-    private let tableView = UITableView(frame: .zero)
+    private let tableView = UITableView(frame: .zero, style: .grouped) // Изменили на grouped style
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .white
+        view.backgroundColor = .systemGroupedBackground // Более светлый фон для контраста
         title = "Today's Feed"
         setupTableView()
         loadUserArticles()
@@ -24,14 +24,17 @@ final class TodaysFeedViewController: UIViewController {
         tableView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
             tableView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
-            tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16), // Добавили отступы
+            tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
             tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
         ])
         
         tableView.dataSource = self
-        tableView.register(UITableViewCell.self, forCellReuseIdentifier: "ArticleCell")
         tableView.delegate = self
+        tableView.register(ArticleTableViewCell.self, forCellReuseIdentifier: "ArticleCell")
+        tableView.separatorStyle = .none
+        tableView.backgroundColor = .clear
+        tableView.contentInset = UIEdgeInsets(top: 8, left: 0, bottom: 8, right: 0) // Добавили отступы сверху и снизу
     }
     
     private func loadUserArticles() {
@@ -90,13 +93,17 @@ extension TodaysFeedViewController: UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "ArticleCell", for: indexPath)
-        let article = articles[indexPath.row]
-        var config = cell.defaultContentConfiguration()
-        config.text = article.title
-        config.secondaryText = article.subtitle
-        cell.contentConfiguration = config
+        let cell = tableView.dequeueReusableCell(withIdentifier: "ArticleCell", for: indexPath) as! ArticleTableViewCell
+        cell.configure(with: articles[indexPath.row])
         return cell
+    }
+    
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return UITableView.automaticDimension
+    }
+    
+    func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {
+        return 100
     }
 }
 
