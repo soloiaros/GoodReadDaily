@@ -55,8 +55,11 @@ class InProcessViewController: UIViewController {
 }
 
 class ArticleTableViewCell: UITableViewCell {
+    private let titleLabel = UILabel()
+    private let subtitleLabel = UILabel()
+    
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
-        super.init(style: .subtitle, reuseIdentifier: reuseIdentifier)
+        super.init(style: style, reuseIdentifier: reuseIdentifier)
         setupCell()
     }
     
@@ -66,37 +69,52 @@ class ArticleTableViewCell: UITableViewCell {
     
     private func setupCell() {
         backgroundColor = .clear
-        contentView.backgroundColor = UIColor(red: 0.96, green: 0.94, blue: 0.89, alpha: 1.0) // светло-бежевый
+        selectionStyle = .none
+        
+        // Настройка контейнера
+        contentView.backgroundColor = UIColor(red: 0.96, green: 0.94, blue: 0.89, alpha: 1.0)
         contentView.layer.cornerRadius = 12
         contentView.layer.masksToBounds = true
         
-        // Добавляем отступы вокруг контента
-        contentView.layoutMargins = UIEdgeInsets(top: 12, left: 16, bottom: 12, right: 16)
+        // Настройка заголовка
+        titleLabel.numberOfLines = 0
+        titleLabel.font = UIFont.systemFont(ofSize: 17, weight: .semibold)
+        titleLabel.setContentCompressionResistancePriority(.required, for: .vertical)
         
-        // Настройка текста
-        textLabel?.numberOfLines = 0
-        textLabel?.font = UIFont.systemFont(ofSize: 17, weight: .semibold)
-        detailTextLabel?.numberOfLines = 0
-        detailTextLabel?.textColor = .darkGray
-        detailTextLabel?.font = UIFont.systemFont(ofSize: 15)
+        // Настройка подзаголовка
+        subtitleLabel.numberOfLines = 0
+        subtitleLabel.textColor = .darkGray
+        subtitleLabel.font = UIFont.systemFont(ofSize: 15)
+        subtitleLabel.setContentCompressionResistancePriority(.required, for: .vertical)
+        
+        // Стек для текстовых элементов
+        let textStack = UIStackView(arrangedSubviews: [titleLabel, subtitleLabel])
+        textStack.axis = .vertical
+        textStack.spacing = 4
+        textStack.alignment = .leading
+        
+        contentView.addSubview(textStack)
+        textStack.translatesAutoresizingMaskIntoConstraints = false
+        
+        NSLayoutConstraint.activate([
+            textStack.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 12),
+            textStack.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
+            textStack.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
+            textStack.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -12)
+        ])
+    }
+    
+    func configure(with article: Article) {
+        titleLabel.text = article.title
+        subtitleLabel.text = article.subtitle
     }
     
     override func layoutSubviews() {
         super.layoutSubviews()
         
-        // Устанавливаем отступы для ячейки
+        // Отступы между ячейками
         let margins = UIEdgeInsets(top: 8, left: 0, bottom: 8, right: 0)
         contentView.frame = contentView.frame.inset(by: margins)
-    }
-    
-    override func setSelected(_ selected: Bool, animated: Bool) {
-        super.setSelected(selected, animated: animated)
-        contentView.backgroundColor = UIColor(red: 0.96, green: 0.94, blue: 0.89, alpha: 1.0)
-    }
-    
-    override func setHighlighted(_ highlighted: Bool, animated: Bool) {
-        super.setHighlighted(highlighted, animated: animated)
-        contentView.backgroundColor = UIColor(red: 0.96, green: 0.94, blue: 0.89, alpha: 1.0)
     }
 }
 
@@ -107,9 +125,7 @@ extension InProcessViewController: UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "ArticleCell", for: indexPath) as! ArticleTableViewCell
-        let article = articles[indexPath.row]
-        cell.textLabel?.text = article.title
-        cell.detailTextLabel?.text = article.subtitle
+        cell.configure(with: articles[indexPath.row])
         return cell
     }
     
@@ -118,7 +134,7 @@ extension InProcessViewController: UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 80
+        return 100
     }
 }
 
