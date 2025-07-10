@@ -1,11 +1,3 @@
-//
-//  SceneDelegate.swift
-//  GoodReadDaily
-//
-//  Created by Yaroslav Solovev on 7/4/25.
-//
-
-
 import UIKit
 import FirebaseAuth
 
@@ -13,24 +5,30 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
     var window: UIWindow?
     
+    @MainActor
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
         guard let windowScene = (scene as? UIWindowScene) else { return }
         
         window = UIWindow(windowScene: windowScene)
         
         let rootVC: UIViewController
-        if Auth.auth().currentUser != nil {
+        if let user = Auth.auth().currentUser {
+            print("SceneDelegate: User logged in, UID: \(user.uid)")
             if let userData = SwiftDataManager.shared.getUserData() {
+                print("SceneDelegate: UserData found, hasSeenGenreScreen: \(userData.preferences.hasSeenGenreScreen)")
                 rootVC = userData.preferences.hasSeenGenreScreen ? MainViewController() : GenreSelectionViewController()
             } else {
-                rootVC = GenreSelectionViewController() // Fallback if user data fetch fails
+                print("SceneDelegate: Failed to fetch or create UserData for UID: \(user.uid)")
+                rootVC = GenreSelectionViewController() // Fallback for unexpected failure
             }
         } else {
+            print("SceneDelegate: No user logged in")
             rootVC = LoginViewController()
         }
         
         window?.rootViewController = UINavigationController(rootViewController: rootVC)
         window?.makeKeyAndVisible()
+        print("SceneDelegate: Root VC set to: \(String(describing: type(of: rootVC)))")
     }
 
     func sceneDidDisconnect(_ scene: UIScene) {}
