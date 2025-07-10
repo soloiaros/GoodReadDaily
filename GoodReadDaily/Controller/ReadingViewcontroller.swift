@@ -2,6 +2,12 @@ import UIKit
 
 final class ArticleViewController: UIViewController {
     private let article: Article
+    private var currentFontSize: CGFloat = 18 {
+            didSet {
+                updateFontSizes()
+                fontSizeControlView?.updateSize(currentFontSize) // Добавляем эту строку
+            }
+    }
     
     // UI Elements
     private let scrollView = UIScrollView()
@@ -13,6 +19,7 @@ final class ArticleViewController: UIViewController {
     private let idLabel = UILabel()
     private let contentTextView = UITextView()
     private let readButton = UIButton(type: .system)
+    private var fontSizeControlView: FontSizeControlView?
     
     init(article: Article) {
         self.article = article
@@ -29,6 +36,74 @@ final class ArticleViewController: UIViewController {
         setupUI()
         configure(with: article)
         updateReadButtonState()
+        setupGestures()
+    }
+    
+    private func setupGestures() {
+        let tripleTapGesture = UITapGestureRecognizer(target: self, action: #selector(handleDoubleTap(_:)))
+        tripleTapGesture.numberOfTapsRequired = 3
+        contentTextView.addGestureRecognizer(tripleTapGesture)
+        contentTextView.isUserInteractionEnabled = true
+    }
+    
+    @objc private func handleDoubleTap(_ gesture: UITapGestureRecognizer) {
+        if fontSizeControlView == nil {
+            showFontSizeControls()
+        } else {
+            hideFontSizeControls()
+        }
+    }
+    
+    private func showFontSizeControls() {
+        fontSizeControlView = FontSizeControlView(currentSize: currentFontSize)
+        guard let fontSizeControlView = fontSizeControlView else { return }
+        
+        fontSizeControlView.onIncrease = { [weak self] in
+            self?.currentFontSize += 1
+        }
+        
+        fontSizeControlView.onDecrease = { [weak self] in
+            self?.currentFontSize -= 1
+        }
+        
+        fontSizeControlView.onClose = { [weak self] in
+            self?.hideFontSizeControls()
+        }
+        
+        view.addSubview(fontSizeControlView)
+        fontSizeControlView.translatesAutoresizingMaskIntoConstraints = false
+        
+        NSLayoutConstraint.activate([
+            fontSizeControlView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            fontSizeControlView.centerYAnchor.constraint(equalTo: view.centerYAnchor),
+            fontSizeControlView.widthAnchor.constraint(equalToConstant: 200),
+            fontSizeControlView.heightAnchor.constraint(equalToConstant: 60)
+        ])
+        
+        fontSizeControlView.transform = CGAffineTransform(scaleX: 0.1, y: 0.1)
+        UIView.animate(withDuration: 0.3, delay: 0, usingSpringWithDamping: 0.6, initialSpringVelocity: 0, options: [], animations: {
+            fontSizeControlView.transform = .identity
+        })
+    }
+    
+    private func hideFontSizeControls() {
+        UIView.animate(withDuration: 0.2, animations: {
+            self.fontSizeControlView?.alpha = 0
+            self.fontSizeControlView?.transform = CGAffineTransform(scaleX: 0.1, y: 0.1)
+        }) { _ in
+            self.fontSizeControlView?.removeFromSuperview()
+            self.fontSizeControlView = nil
+        }
+    }
+    
+    private func updateFontSizes() {
+        contentTextView.font = UIFont.systemFont(ofSize: currentFontSize)
+        
+        // Обновляем размеры других элементов, если нужно
+        titleLabel.font = UIFont.boldSystemFont(ofSize: currentFontSize + 6)
+        subtitleLabel.font = UIFont.italicSystemFont(ofSize: currentFontSize - 2)
+        authorLabel.font = UIFont.systemFont(ofSize: currentFontSize - 4)
+        genreLabel.font = UIFont.systemFont(ofSize: currentFontSize - 4)
     }
     
     private func setupUI() {
@@ -221,6 +296,89 @@ final class ArticleViewController: UIViewController {
                 self.updateReadButtonState()
             }
         }
+    }
+}
+
+class FontSizeControlView: UIView {
+    var onIncrease: (() -> Void)?
+    var onDecrease: (() -> Void)?
+    var onClose: (() -> Void)?
+    
+    private let sizeLabel = UILabel()
+    private let decreaseButton = UIButton(type: .system)
+    private let increaseButton = UIButton(type: .system)
+    private let closeButton = UIButton(type: .system)
+    
+    init(currentSize: CGFloat) {
+        super.init(frame: .zero)
+        setupView(currentSize: currentSize)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    private func setupView(currentSize: CGFloat) {
+        backgroundColor = .systemBackground
+        layer.cornerRadius = 12
+        layer.shadowColor = UIColor.black.cgColor
+        layer.shadowOpacity = 0.2
+        layer.shadowOffset = CGSize(width: 0, height: 2)
+        layer.shadowRadius = 4
+        
+        decreaseButton.setTitle("-", for: .normal)
+        decreaseButton.titleLabel?.font = UIFont.systemFont(ofSize: 20, weight: .bold)
+        decreaseButton.addTarget(self, action: #selector(decreaseTapped), for: .touchUpInside)
+        
+        increaseButton.setTitle("+", for: .normal)
+        increaseButton.titleLabel?.font = UIFont.systemFont(ofSize: 20, weight: .bold)
+        increaseButton.addTarget(self, action: #selector(increaseTapped), for: .touchUpInside)
+        
+        sizeLabel.text = "\(Int(currentSize))"
+        sizeLabel.font = UIFont.systemFont(ofSize: 16, weight: .medium)
+        sizeLabel.textAlignment = .center
+        
+        closeButton.setTitle("×", for: .normal)
+        closeButton.titleLabel?.font = UIFont.systemFont(ofSize: 20, weight: .bold)
+        closeButton.addTarget(self, action: #selector(closeTapped), for: .touchUpInside)
+        
+        let stackView = UIStackView(arrangedSubviews: [decreaseButton, sizeLabel, increaseButton])
+        stackView.axis = .horizontal
+        stackView.distribution = .fillEqually
+        stackView.spacing = 10
+        
+        addSubview(stackView)
+        addSubview(closeButton)
+        
+        stackView.translatesAutoresizingMaskIntoConstraints = false
+        closeButton.translatesAutoresizingMaskIntoConstraints = false
+        
+        NSLayoutConstraint.activate([
+            stackView.centerXAnchor.constraint(equalTo: centerXAnchor),
+            stackView.centerYAnchor.constraint(equalTo: centerYAnchor),
+            stackView.widthAnchor.constraint(equalTo: widthAnchor, multiplier: 0.8),
+            
+            closeButton.topAnchor.constraint(equalTo: topAnchor, constant: 8),
+            closeButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -8),
+            closeButton.widthAnchor.constraint(equalToConstant: 24),
+            closeButton.heightAnchor.constraint(equalToConstant: 24)
+        ])
+    }
+    
+    func updateSize(_ size: CGFloat) {
+        sizeLabel.text = "\(Int(size))"
+    }
+    
+    @objc private func decreaseTapped() {
+        onDecrease?()
+    }
+    
+    @objc private func increaseTapped() {
+        onIncrease?()
+    }
+    
+    @objc private func closeTapped() {
+        onClose?()
     }
 }
 
