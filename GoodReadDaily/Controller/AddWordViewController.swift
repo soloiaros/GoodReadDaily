@@ -5,10 +5,12 @@
 //  Created by Yaroslav Solovev on 7/9/25.
 //
 
+
 import UIKit
+import SwiftData
 
 protocol AddWordDelegate: AnyObject {
-    func didAddWord(_ word: DictionaryEntry)
+    func didAddWord(_ word: SDDictionaryEntry)
 }
 
 class AddWordViewController: UIViewController {
@@ -118,13 +120,18 @@ class AddWordViewController: UIViewController {
         }
         
         let context = contextTextView.text.trimmingCharacters(in: .whitespacesAndNewlines)
-        let newEntry = DictionaryEntry(word: word, context: context.isEmpty ? nil : context)
+        let newEntry = SDDictionaryEntry(word: word, context: context.isEmpty ? nil : context)
         
-        UserDataManager.shared.userData.savedWords.append(newEntry)
-        UserDataManager.shared.save()
-        
-        delegate?.didAddWord(newEntry)
-        dismiss(animated: true)
+        if let userData = SwiftDataManager.shared.getUserData() {
+            if !userData.savedWords.contains(where: { $0.word.lowercased() == word.lowercased() }) {
+                userData.savedWords.append(newEntry)
+                SwiftDataManager.shared.save()
+                delegate?.didAddWord(newEntry)
+                dismiss(animated: true)
+            } else {
+                showAlert(title: "Duplicate Word", message: "This word is already in your dictionary")
+            }
+        }
     }
     
     private func showAlert(title: String, message: String) {

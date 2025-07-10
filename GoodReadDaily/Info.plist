@@ -37,5 +37,7 @@
             </dict>
         </dict>
     </dict>
+    <key>NSSwiftDataModel</key>
+    <string>GoodReadDailyModel</string>
 </dict>
 </plist>

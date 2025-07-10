@@ -5,6 +5,7 @@
 //  Created by Yaroslav Solovev on 7/6/25.
 //
 
+
 import UIKit
 
 final class TodaysFeedViewController: UIViewController {
@@ -31,25 +32,22 @@ final class TodaysFeedViewController: UIViewController {
         
         tableView.dataSource = self
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: "ArticleCell")
-            
         tableView.delegate = self
     }
     
     private func loadUserArticles() {
         if ArticleStorage.shouldRefreshArticles() {
             refreshArticles()
-        }
-        else if let storedArticles = ArticleStorage.getTodaysArticles() {
+        } else if let storedArticles = ArticleStorage.getTodaysArticles() {
             articles = storedArticles
             tableView.reloadData()
-        }
-        else {
+        } else {
             refreshArticles()
         }
     }
     
     @objc private func refreshArticles() {
-        let genres = UserDataManager.shared.userData.preferences.genres
+        let genres = SwiftDataManager.shared.getUserData()?.preferences.genres ?? []
         let newArticles = ArticleManager.getRandomArticles(for: genres, count: 3)
         
         ArticleStorage.storeTodaysArticles(newArticles)
@@ -69,27 +67,17 @@ final class TodaysFeedViewController: UIViewController {
         emptyLabel.textAlignment = .center
         emptyLabel.numberOfLines = 0
         emptyLabel.textColor = .gray
-        
         tableView.backgroundView = emptyLabel
     }
 }
 
 extension TodaysFeedViewController: UITableViewDataSource {
-    func tableView(
-        _ tableView: UITableView,
-        numberOfRowsInSection section: Int
-    ) -> Int {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return articles.count
     }
     
-    func tableView(
-        _ tableView: UITableView,
-        cellForRowAt indexPath: IndexPath
-    ) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(
-            withIdentifier: "ArticleCell",
-            for: indexPath
-        )
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: "ArticleCell", for: indexPath)
         let article = articles[indexPath.row]
         var config = cell.defaultContentConfiguration()
         config.text = article.title
@@ -104,9 +92,10 @@ extension TodaysFeedViewController: UITableViewDelegate {
         tableView.deselectRow(at: indexPath, animated: true)
         let selectedArticle = articles[indexPath.row]
         let selectedArticleID = selectedArticle.id
-        if !UserDataManager.shared.userData.inProgressArticleIDs.contains(selectedArticleID) {
-            UserDataManager.shared.userData.inProgressArticleIDs.append(selectedArticleID)
-            UserDataManager.shared.save()
+        if let userData = SwiftDataManager.shared.getUserData(),
+           !userData.inProgressArticleIDs.contains(selectedArticleID) {
+            userData.inProgressArticleIDs.append(selectedArticleID)
+            SwiftDataManager.shared.save()
         }
         let detailVC = ArticleViewController(article: selectedArticle)
         navigationController?.pushViewController(detailVC, animated: true)

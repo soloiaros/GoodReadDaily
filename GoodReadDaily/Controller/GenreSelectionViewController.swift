@@ -1,9 +1,3 @@
-//
-//  GenreSelectionViewController.swift
-//  GoodReadDaily
-//
-//  Created by Yaroslav Solovev on 7/6/25.
-//
 
 import UIKit
 
@@ -61,7 +55,6 @@ class GenreSelectionViewController: UIViewController {
         
         doneButton.setTitle("Continue", for: .normal)
         doneButton.addTarget(self, action: #selector(finishOnboarding), for: .touchUpInside)
-//        doneButton.translatesAutoresizingMaskIntoConstraints = false
         skipButton.setTitle("Skip", for: .normal)
         skipButton.setTitleColor(.gray, for: .normal)
         skipButton.addTarget(self, action: #selector(skipOnboarding), for: .touchUpInside)
@@ -99,7 +92,6 @@ class GenreSelectionViewController: UIViewController {
                 selectedGenres.insert(genre.lowercased())
                 sender.isSelected = true
             } else {
-                // Show feedback that maximum reached
                 let alert = UIAlertController(
                     title: "Maximum Reached",
                     message: "You can select up to \(maxGenreSelection) genres.",
@@ -121,27 +113,24 @@ class GenreSelectionViewController: UIViewController {
     }
     
     private func proceedWithOnboarding(genres: [String]) {
-        var userData = UserDataManager.shared.userData
-        userData.preferences.genres = Array(selectedGenres)
-        userData.preferences.hasSeenGenreScreen = true
-        UserDataManager.shared.userData = userData
-        UserDataManager.shared.save()
-        
-        let todaysArticles = ArticleManager.getRandomArticles(for: Array(selectedGenres), count: 3)
-        ArticleStorage.storeTodaysArticles(todaysArticles)
-        userData.todaysArticles = todaysArticles  // maybe delete from here <-
-        UserDataManager.shared.userData = userData
-        UserDataManager.shared.save() //to here <-
-        
-        let mainVC = MainViewController()
-        let navController = UINavigationController(rootViewController: mainVC)
-        guard let window = view.window ?? UIApplication.shared.connectedScenes
-            .compactMap({ $0 as? UIWindowScene })
-            .first?.windows.first else { return }
-        
-        UIView.transition(with: window, duration: 0.3, options: .transitionCrossDissolve, animations: {
-            window.rootViewController = navController
-        }, completion: nil)
+        if let userData = SwiftDataManager.shared.getUserData() {
+            userData.preferences.genres = genres
+            userData.preferences.hasSeenGenreScreen = true
+            SwiftDataManager.shared.save()
+            
+            let todaysArticles = ArticleManager.getRandomArticles(for: genres, count: 3)
+            ArticleStorage.storeTodaysArticles(todaysArticles)
+            
+            let mainVC = MainViewController()
+            let navController = UINavigationController(rootViewController: mainVC)
+            guard let window = view.window ?? UIApplication.shared.connectedScenes
+                .compactMap({ $0 as? UIWindowScene })
+                .first?.windows.first else { return }
+            
+            UIView.transition(with: window, duration: 0.3, options: .transitionCrossDissolve, animations: {
+                window.rootViewController = navController
+            }, completion: nil)
+        }
     }
     
     private func showValidationAlert(message: String) {
@@ -154,7 +143,6 @@ class GenreSelectionViewController: UIViewController {
         present(alert, animated: true)
     }
 }
-
 
 class GenreSelectButton: UIButton {
     private let checkmark = UIImageView()

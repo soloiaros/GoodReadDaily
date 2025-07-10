@@ -5,6 +5,7 @@
 //  Created by Yaroslav Solovev on 7/4/25.
 //
 
+
 import UIKit
 import FirebaseAuth
 
@@ -13,17 +14,17 @@ class MainViewController: UIViewController {
     private let todaysFeedButton = MainWidgetButton(
         title: "Today's Feed",
         subtitle: "Your 3 fresh articles are ready!",
-        isLarge: true,
+        isLarge: true
     )
     
     private let inProcessButton = MainWidgetButton(
         title: "In Process",
-        subtitle: "Continue reading",
+        subtitle: "Continue reading"
     )
     
     private let dictionaryButton = MainWidgetButton(
         title: "Dictionary",
-        subtitle: "Words you saved",
+        subtitle: "Words you saved"
     )
     
     private let logoutButton: UIButton = {
@@ -68,19 +69,16 @@ class MainViewController: UIViewController {
     }
 
     @objc private func openTodaysFeed() {
-        print("Feed btn")
         let vc = TodaysFeedViewController()
         navigationController?.pushViewController(vc, animated: true)
     }
 
     @objc private func openInProcess() {
-        print("process btn")
         let vc = InProcessViewController()
         navigationController?.pushViewController(vc, animated: true)
     }
 
     @objc private func openDictionary() {
-        print("Dictionary btn")
         let vc = DictionaryViewController()
         navigationController?.pushViewController(vc, animated: true)
     }
@@ -88,11 +86,6 @@ class MainViewController: UIViewController {
     @objc private func handleLogout() {
         do {
             try Auth.auth().signOut()
-            
-            let appDomain = Bundle.main.bundleIdentifier!
-            UserDefaults.standard.removePersistentDomain(forName: appDomain)
-            UserDefaults.standard.synchronize()
-            
             let loginVC = LoginViewController()
             let navVC = UINavigationController(rootViewController: loginVC)
             
@@ -100,7 +93,7 @@ class MainViewController: UIViewController {
                 sceneDelegate.window?.rootViewController = navVC
             }
         } catch let signOutError as NSError {
-            print("Error signing out: %@", signOutError)
+            print("Error signing out: \(signOutError)")
         }
     }
 }
@@ -125,25 +118,22 @@ class MainWidgetButton: UIControl {
         layer.cornerRadius = 12
         translatesAutoresizingMaskIntoConstraints = false
         
-        // Title
         titleLabelView.text = title
         titleLabelView.font = UIFont.systemFont(ofSize: isLarge ? 22 : 18, weight: .bold)
         titleLabelView.textColor = .label
         titleLabelView.numberOfLines = 0
-        titleLabelView.isUserInteractionEnabled = false // Add this
+        titleLabelView.isUserInteractionEnabled = false
         
-        // Subtitle
         subtitleLabelView.text = subtitle
         subtitleLabelView.font = UIFont.systemFont(ofSize: isLarge ? 16 : 14)
         subtitleLabelView.textColor = .darkGray
         subtitleLabelView.numberOfLines = 0
-        subtitleLabelView.isUserInteractionEnabled = false // Add this
+        subtitleLabelView.isUserInteractionEnabled = false
         
-        // Stack
         contentStack.axis = .vertical
         contentStack.spacing = 6
         contentStack.translatesAutoresizingMaskIntoConstraints = false
-        contentStack.isUserInteractionEnabled = false // Add this
+        contentStack.isUserInteractionEnabled = false
         contentStack.addArrangedSubview(titleLabelView)
         contentStack.addArrangedSubview(subtitleLabelView)
         

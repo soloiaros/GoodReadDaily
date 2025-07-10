@@ -1,9 +1,9 @@
+
 import UIKit
 
 final class ArticleViewController: UIViewController {
     private let article: Article
     
-    // UI Elements
     private let scrollView = UIScrollView()
     private let contentView = UIView()
     private let titleLabel = UILabel()
@@ -32,7 +32,6 @@ final class ArticleViewController: UIViewController {
     }
     
     private func setupUI() {
-        // ScrollView setup
         view.addSubview(scrollView)
         scrollView.addSubview(contentView)
         
@@ -52,38 +51,31 @@ final class ArticleViewController: UIViewController {
             contentView.widthAnchor.constraint(equalTo: scrollView.widthAnchor)
         ])
         
-        // Title Label
         titleLabel.font = UIFont.boldSystemFont(ofSize: 24)
         titleLabel.numberOfLines = 0
         contentView.addSubview(titleLabel)
         
-        // Subtitle Label
         subtitleLabel.font = UIFont.italicSystemFont(ofSize: 16)
         subtitleLabel.textColor = .gray
         subtitleLabel.numberOfLines = 0
         contentView.addSubview(subtitleLabel)
         
-        // Author Label
         authorLabel.font = UIFont.systemFont(ofSize: 14)
         authorLabel.textColor = .darkGray
         contentView.addSubview(authorLabel)
         
-        // Genre Label
         genreLabel.font = UIFont.systemFont(ofSize: 14)
         genreLabel.textColor = .darkGray
         contentView.addSubview(genreLabel)
         
-        // ID Label
         idLabel.font = UIFont.systemFont(ofSize: 12)
         idLabel.textColor = .lightGray
         contentView.addSubview(idLabel)
         
-        // Content Label
         contentLabel.font = UIFont.systemFont(ofSize: 18)
         contentLabel.numberOfLines = 0
         contentView.addSubview(contentLabel)
         
-        //Basic Settings
         readButton.setTitle("Mark as Read", for: .normal)
         readButton.titleLabel?.font = UIFont.systemFont(ofSize: 18, weight: .medium)
         readButton.backgroundColor = .systemBlue
@@ -92,7 +84,6 @@ final class ArticleViewController: UIViewController {
         readButton.addTarget(self, action: #selector(readButtonTapped), for: .touchUpInside)
         contentView.addSubview(readButton)
         
-        // Constraints
         titleLabel.translatesAutoresizingMaskIntoConstraints = false
         subtitleLabel.translatesAutoresizingMaskIntoConstraints = false
         authorLabel.translatesAutoresizingMaskIntoConstraints = false
@@ -145,24 +136,20 @@ final class ArticleViewController: UIViewController {
     }
     
     private func setupReadButtonInitialState() {
-            let articleId = article.id
-            
-            if UserDataManager.shared.userData.completedArticleIDs.contains(articleId) {
-                // Статья уже прочитана - настраиваем кнопку как "прочитано"
-                readButton.setTitle("✓ Read", for: .normal)
-                readButton.backgroundColor = .systemGreen
-                readButton.isEnabled = false
-            } else {
-                // Статья нет в прочитанных - обычное состояние
-                readButton.setTitle("Mark as Read", for: .normal)
-                readButton.backgroundColor = .systemBlue
-                readButton.isEnabled = true
-            }
+        let articleId = article.id
+        if let userData = SwiftDataManager.shared.getUserData(),
+           userData.completedArticleIDs.contains(articleId) {
+            readButton.setTitle("✓ Read", for: .normal)
+            readButton.backgroundColor = .systemGreen
+            readButton.isEnabled = false
+        } else {
+            readButton.setTitle("Mark as Read", for: .normal)
+            readButton.backgroundColor = .systemBlue
+            readButton.isEnabled = true
         }
+    }
     
     @objc private func readButtonTapped() {
-
-        // Визуальная обратная связь
         readButton.setTitle("✓ Read", for: .normal)
         readButton.backgroundColor = .systemGreen
         
@@ -175,17 +162,15 @@ final class ArticleViewController: UIViewController {
         }
         
         let articleID = article.id
-        if UserDataManager.shared.userData.completedArticleIDs.contains(articleID) {
-            
-            showAlreadyReadAlert()
-            return
+        if let userData = SwiftDataManager.shared.getUserData() {
+            if userData.completedArticleIDs.contains(articleID) {
+                showAlreadyReadAlert()
+            } else {
+                userData.completedArticleIDs.append(articleID)
+                SwiftDataManager.shared.save()
+                readButton.isEnabled = false
+            }
         }
-        else {
-            UserDataManager.shared.userData.completedArticleIDs.append(articleID)
-            UserDataManager.shared.save()
-            return
-        }
-        
     }
         
     private func showAlreadyReadAlert() {
@@ -197,5 +182,4 @@ final class ArticleViewController: UIViewController {
         alert.addAction(UIAlertAction(title: "OK", style: .default))
         present(alert, animated: true)
     }
-        
 }
