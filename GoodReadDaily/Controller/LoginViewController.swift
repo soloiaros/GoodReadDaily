@@ -156,13 +156,15 @@ class LoginViewController: UIViewController {
     private func routeAfterLogin() {
         let rootVC: UIViewController
         if let userData = SwiftDataManager.shared.getUserData() {
+            print("LoginViewController: UserData found, hasSeenGenreScreen: \(userData.preferences.hasSeenGenreScreen)")
             rootVC = userData.preferences.hasSeenGenreScreen ? MainViewController() : GenreSelectionViewController()
         } else {
+            print("LoginViewController: No userData found, routing to GenreSelectionViewController")
             rootVC = GenreSelectionViewController()
         }
-        let navController = UINavigationController(rootViewController: rootVC)
-        navController.modalPresentationStyle = .fullScreen
-        present(navController, animated: true)
+        
+        // Update the navigation stack
+        navigationController?.setViewControllers([rootVC], animated: true)
     }
     
     private func showError(_ error: Error) {
