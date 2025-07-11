@@ -3,11 +3,13 @@ import UIKit
 class InProcessViewController: UIViewController {
     private var articles: [Article] = []
     private let tableView = UITableView()
+    private let bottomBar = BottomNavigationBar()
     
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .white
         title = "Currently Reading"
+        setupBottomBar() // Moved before setupTableView
         setupTableView()
         loadInProgressArticles()
     }
@@ -19,7 +21,7 @@ class InProcessViewController: UIViewController {
             tableView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
             tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
             tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
-            tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
+            tableView.bottomAnchor.constraint(equalTo: bottomBar.topAnchor)
         ])
         
         tableView.dataSource = self
@@ -27,6 +29,30 @@ class InProcessViewController: UIViewController {
         tableView.register(ArticleTableViewCell.self, forCellReuseIdentifier: "ArticleCell")
         tableView.separatorStyle = .none
         tableView.backgroundColor = .clear
+    }
+    
+    private func setupBottomBar() {
+        bottomBar.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(bottomBar)
+        
+        NSLayoutConstraint.activate([
+            bottomBar.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            bottomBar.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            bottomBar.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
+            bottomBar.heightAnchor.constraint(equalToConstant: 60)
+        ])
+        
+        bottomBar.onMainTapped = { [weak self] in
+            self?.navigationController?.popToRootViewController(animated: true)
+        }
+        bottomBar.onResumeReadingTapped = { [weak self] in
+            self?.navigateToResumeReading()
+        }
+        bottomBar.onSettingsTapped = { [weak self] in
+            self?.navigationController?.pushViewController(SettingsViewController(), animated: true)
+        }
+        
+        updateResumeReadingButton()
     }
     
     private func loadInProgressArticles() {
@@ -41,6 +67,7 @@ class InProcessViewController: UIViewController {
         if articles.isEmpty {
             showEmptyState()
         }
+        updateResumeReadingButton()
     }
     
     private func showEmptyState() {
@@ -50,6 +77,22 @@ class InProcessViewController: UIViewController {
         emptyLabel.textColor = .gray
         emptyLabel.numberOfLines = 0
         tableView.backgroundView = emptyLabel
+    }
+    
+    private func updateResumeReadingButton() {
+        if let userData = SwiftDataManager.shared.getUserData() {
+            bottomBar.updateResumeReadingButton(isEnabled: !userData.inProgressArticleIDs.isEmpty)
+        }
+    }
+    
+    private func navigateToResumeReading() {
+        guard let userData = SwiftDataManager.shared.getUserData(),
+              let lastArticleID = userData.inProgressArticleIDs.last,
+              let article = ArticleManager.getArticles(forIDs: [lastArticleID]).first else {
+            return
+        }
+        let detailVC = ArticleViewController(article: article)
+        navigationController?.pushViewController(detailVC, animated: true)
     }
 }
 
@@ -65,14 +108,12 @@ class ArticleTableViewCell: UITableViewCell {
     
     private func setupCell() {
         backgroundColor = .clear
-        contentView.backgroundColor = UIColor(red: 0.96, green: 0.94, blue: 0.89, alpha: 1.0) // Light beige
+        contentView.backgroundColor = UIColor(red: 0.96, green: 0.94, blue: 0.89, alpha: 1.0)
         contentView.layer.cornerRadius = 12
         contentView.layer.masksToBounds = true
         
-        // Add margins around content
         contentView.layoutMargins = UIEdgeInsets(top: 12, left: 16, bottom: 12, right: 16)
         
-        // Configure text
         textLabel?.numberOfLines = 0
         textLabel?.font = UIFont.systemFont(ofSize: 17, weight: .semibold)
         detailTextLabel?.numberOfLines = 0
@@ -83,7 +124,6 @@ class ArticleTableViewCell: UITableViewCell {
     override func layoutSubviews() {
         super.layoutSubviews()
         
-        // Set margins for the cell
         let margins = UIEdgeInsets(top: 8, left: 0, bottom: 8, right: 0)
         contentView.frame = contentView.frame.inset(by: margins)
     }
