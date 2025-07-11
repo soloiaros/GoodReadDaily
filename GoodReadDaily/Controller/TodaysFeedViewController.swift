@@ -9,7 +9,7 @@ final class TodaysFeedViewController: UIViewController {
         super.viewDidLoad()
         view.backgroundColor = .systemGroupedBackground // Более светлый фон для контраста
         title = "Today's Feed"
-        setupBottomBar() // Moved before setupTableView
+        setupBottomBar()
         setupTableView()
         loadUserArticles()
     }

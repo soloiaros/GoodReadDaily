@@ -6,7 +6,8 @@ class MainViewController: UIViewController {
     private let todaysFeedButton = MainWidgetButton(
         title: "Today's Feed",
         subtitle: "Your 3 fresh articles are ready!",
-        isLarge: true
+        isLarge: true,
+        backgroundColor: UIColor(red: 160/255.0, green: 134/255.0, blue: 121/255.0, alpha: 0.5)
     )
     
     private let inProcessButton = MainWidgetButton(
@@ -29,7 +30,7 @@ class MainViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         title = "GoodReadDaily"
-        view.backgroundColor = .white
+        view.backgroundColor = .systemGroupedBackground
         setupBottomBar()
         setupLayout()
         setupActions()
@@ -125,18 +126,24 @@ class MainWidgetButton: UIControl {
     private let subtitleLabelView = UILabel()
     private let contentStack = UIStackView()
     
-    init(title: String, subtitle: String, isLarge: Bool = false) {
+    init(title: String, subtitle: String, isLarge: Bool = false, backgroundColor: UIColor = UIColor.systemBrown.withAlphaComponent(0.1)) {
         super.init(frame: .zero)
-        setupUI(title: title, subtitle: subtitle, isLarge: isLarge)
+        setupUI(title: title, subtitle: subtitle, isLarge: isLarge, backgroundColor: backgroundColor)
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
-    private func setupUI(title: String, subtitle: String, isLarge: Bool) {
-        backgroundColor = UIColor.systemBrown.withAlphaComponent(0.1)
+    private func setupUI(title: String, subtitle: String, isLarge: Bool, backgroundColor: UIColor) {
+        self.backgroundColor = backgroundColor
         layer.cornerRadius = 12
+        
+        layer.shadowColor = UIColor.black.cgColor
+        layer.shadowOffset = CGSize(width: 2, height: 2)
+        layer.shadowRadius = 4
+        layer.shadowOpacity = 0.1
+        
         translatesAutoresizingMaskIntoConstraints = false
         
         titleLabelView.text = title
