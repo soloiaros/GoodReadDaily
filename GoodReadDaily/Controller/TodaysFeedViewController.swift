@@ -41,7 +41,7 @@ final class TodaysFeedViewController: UIViewController {
         ])
         
         bottomBar.onMainTapped = { [weak self] in
-            // Already on Main, no action needed
+            self?.navigationController?.popToRootViewController(animated: true)
         }
         bottomBar.onResumeReadingTapped = { [weak self] in
             self?.navigateToResumeReading()
