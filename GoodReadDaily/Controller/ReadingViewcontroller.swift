@@ -163,7 +163,7 @@ final class ArticleViewController: UIViewController {
         contentView.addSubview(idLabel)
         
         // Content TextView
-        contentTextView.font = tinos_reg
+        contentTextView.font = UIFont(name: "Tinos-Regular", size: 21)
         contentTextView.isEditable = false
         contentTextView.isSelectable = true
         contentTextView.isScrollEnabled = false
