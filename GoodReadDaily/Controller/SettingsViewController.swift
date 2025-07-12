@@ -126,15 +126,17 @@ class SettingsViewController: UIViewController {
             bottomBar.heightAnchor.constraint(equalToConstant: 60)
         ])
         
+        bottomBar.updateSettingsButtonColor(true)
+        
         bottomBar.onMainTapped = { [weak self] in
             self?.navigationController?.popToRootViewController(animated: true)
         }
         bottomBar.onResumeReadingTapped = { [weak self] in
             self?.navigateToResumeReading()
         }
-        bottomBar.onSettingsTapped = { [weak self] in
-            // Already on Settings, no action needed
-        }
+//        bottomBar.onSettingsTapped = { [weak self] in
+//            // Already on Settings, no action needed
+//        }
         
         updateResumeReadingButton()
     }
