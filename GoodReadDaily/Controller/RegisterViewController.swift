@@ -187,11 +187,23 @@ class RegisterViewController: UIViewController {
                     self?.showAlert(title: "Error", message: error.localizedDescription)
                 } else {
                     self?.onRegistrationSuccess?(email, password)
-                    self?.navigationController?.popViewController(animated: true)
+                    self?.rootAfterRegister()
                 }
             }
         }
     }
+    private func rootAfterRegister() {
+        let rootVC: UIViewController
+        if let userData = SwiftDataManager.shared.getUserData() {
+            print("LoginViewController: UserData found, hasSeenGenreScreen: \(userData.preferences.hasSeenGenreScreen)")
+            rootVC = userData.preferences.hasSeenGenreScreen ? MainViewController() : GenreSelectionViewController()
+        } else {
+            print("LoginViewController: No userData found, routing to GenreSelectionViewController")
+            rootVC = GenreSelectionViewController()
+        }
+        navigationController?.setViewControllers([rootVC], animated: true)
+    }
+
     
     private func showAlert(title: String, message: String) {
         let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)

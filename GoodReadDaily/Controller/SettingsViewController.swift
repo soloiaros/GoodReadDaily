@@ -31,6 +31,7 @@ class SettingsViewController: UIViewController {
         super.viewDidLoad()
         view.backgroundColor = .systemBackground
         title = "Settings"
+        navigationItem.hidesBackButton = true
         setupBottomBar()
         setupUI()
         setupActions()

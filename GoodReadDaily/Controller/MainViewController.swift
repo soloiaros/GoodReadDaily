@@ -38,6 +38,14 @@ class MainViewController: UIViewController {
         setupBottomBar()
         setupLayout()
         setupActions()
+        viewWillAppear(true)
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        let backButton = UIBarButtonItem()
+        backButton.title = "Back"
+        navigationItem.backBarButtonItem = backButton
     }
     
     private func setupLayout() {
