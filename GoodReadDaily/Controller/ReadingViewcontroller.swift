@@ -33,6 +33,10 @@ final class ArticleViewController: UIViewController {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        navigationItem.title = "" // убирает title только на этом экране
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -135,6 +139,7 @@ final class ArticleViewController: UIViewController {
         // Title Label
         titleLabel.font = UIFont.boldSystemFont(ofSize: 24)
         titleLabel.numberOfLines = 0
+        titleLabel.textColor = .black
         contentView.addSubview(titleLabel)
         
         // Subtitle Label
@@ -171,6 +176,7 @@ final class ArticleViewController: UIViewController {
         contentTextView.textContainer.lineFragmentPadding = 0
         contentTextView.dataDetectorTypes = .all
         contentView.backgroundColor = UIColor(red: 255/255, green: 245/255, blue: 220/255, alpha: 1.0)
+        contentTextView.textColor = .black
 //        contentView.tintColor =  UIColor(red: 255/255, green: 245/255, blue: 220/255, alpha: 1.0)
         contentView.addSubview(contentTextView)
         
