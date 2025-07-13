@@ -64,9 +64,19 @@ class BottomNavigationBar: UIView {
         ])
     }
     
+    func updateMainButtonColor(_ isMainScreenActive: Bool) {
+        let mainColor = UIColor(red: 89/255, green: 101/255, blue: 123/255, alpha: 1.0)
+        mainButton.tintColor = isMainScreenActive ? mainColor : .systemGray
+    }
+    
     func updateResumeReadingButton(isEnabled: Bool) {
         resumeReadingButton.isEnabled = isEnabled
         resumeReadingButton.tintColor = isEnabled ? .systemBrown : .systemGray
+    }
+    
+    func updateSettingsButtonColor(_ isSettingsScreenActive: Bool) {
+        let mainColor = UIColor(red: 89/255, green: 101/255, blue: 123/255, alpha: 1.0)
+        settingsButton.tintColor = isSettingsScreenActive ? mainColor : .systemGray
     }
     
     @objc private func mainTapped() {

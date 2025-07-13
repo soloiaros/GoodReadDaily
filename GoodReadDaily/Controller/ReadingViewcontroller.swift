@@ -171,7 +171,7 @@ final class ArticleViewController: UIViewController {
         contentTextView.textContainer.lineFragmentPadding = 0
         contentTextView.dataDetectorTypes = .all
         contentView.backgroundColor = UIColor(red: 255/255, green: 245/255, blue: 220/255, alpha: 1.0)
-        contentView.tintColor =  UIColor(red: 255/255, green: 245/255, blue: 220/255, alpha: 1.0)
+//        contentView.tintColor =  UIColor(red: 255/255, green: 245/255, blue: 220/255, alpha: 1.0)
         contentView.addSubview(contentTextView)
         
         // Read Button Settings

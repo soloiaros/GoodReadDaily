@@ -38,6 +38,14 @@ class MainViewController: UIViewController {
         setupBottomBar()
         setupLayout()
         setupActions()
+        viewWillAppear(true)
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        let backButton = UIBarButtonItem()
+        backButton.title = "Back"
+        navigationItem.backBarButtonItem = backButton
     }
     
     private func setupLayout() {
@@ -65,10 +73,10 @@ class MainViewController: UIViewController {
             bottomBar.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
             bottomBar.heightAnchor.constraint(equalToConstant: 60)
         ])
-        
-        bottomBar.onMainTapped = { [weak self] in
-            // Already on MainViewController, no action needed
-        }
+        bottomBar.updateMainButtonColor(true)
+//        bottomBar.onMainTapped = { [weak self] in
+//            // Already on MainViewController, no action needed
+//        }
         bottomBar.onResumeReadingTapped = { [weak self] in
             self?.navigateToResumeReading()
         }
