@@ -36,7 +36,6 @@ class SettingsViewController: UIViewController {
         setupUI()
         setupActions()
         loadUserData()
-        print("SettingsViewController: viewDidLoad completed, tableView added: \(genresTableView.superview != nil)")
     }
     
     private func setupUI() {
@@ -134,10 +133,6 @@ class SettingsViewController: UIViewController {
         bottomBar.onResumeReadingTapped = { [weak self] in
             self?.navigateToResumeReading()
         }
-//        bottomBar.onSettingsTapped = { [weak self] in
-//            // Already on Settings, no action needed
-//        }
-        
         updateResumeReadingButton()
     }
     
@@ -151,7 +146,6 @@ class SettingsViewController: UIViewController {
             loginLabel.text = "Not logged in"
             selectedGenres = []
             genresTableView.reloadData()
-            print("SettingsViewController: No user logged in")
             return
         }
         loginLabel.text = user.email ?? "Unknown User"
@@ -160,18 +154,15 @@ class SettingsViewController: UIViewController {
             selectedGenres = userData.preferences.genres
             genresTableView.reloadData()
             updateResumeReadingButton()
-            print("SettingsViewController: Loaded genres: \(selectedGenres)")
         } else {
             selectedGenres = []
             genresTableView.reloadData()
-            print("SettingsViewController: Failed to load userData")
         }
     }
     
     private func updateResumeReadingButton() {
         if let userData = SwiftDataManager.shared.getUserData() {
             bottomBar.updateResumeReadingButton(isEnabled: !userData.inProgressArticleIDs.isEmpty)
-            print("SettingsViewController: Resume Reading enabled: \(!userData.inProgressArticleIDs.isEmpty)")
         }
     }
     
@@ -179,19 +170,16 @@ class SettingsViewController: UIViewController {
         guard let userData = SwiftDataManager.shared.getUserData(),
               let lastArticleID = userData.inProgressArticleIDs.last,
               let article = ArticleManager.getArticles(forIDs: [lastArticleID]).first else {
-            print("SettingsViewController: No articles to resume")
             return
         }
         let detailVC = ArticleViewController(article: article)
         navigationController?.pushViewController(detailVC, animated: true)
-        print("SettingsViewController: Navigated to article ID: \(lastArticleID)")
     }
     
     @objc private func updatePreferences() {
         if let userData = SwiftDataManager.shared.getUserData() {
             userData.preferences.genres = selectedGenres
             SwiftDataManager.shared.save()
-            print("SettingsViewController: Saved genres: \(selectedGenres)")
             navigationController?.popToRootViewController(animated: true)
         } else {
             print("SettingsViewController: Failed to save preferences, no userData")
@@ -207,7 +195,6 @@ class SettingsViewController: UIViewController {
             if let sceneDelegate = UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate {
                 sceneDelegate.window?.rootViewController = navVC
             }
-            print("SettingsViewController: Logged out successfully")
         } catch let signOutError as NSError {
             print("SettingsViewController: Error signing out: \(signOutError)")
         }
@@ -217,7 +204,6 @@ class SettingsViewController: UIViewController {
 extension SettingsViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         let count = genres.count
-        print("SettingsViewController: Table view rows: \(count)")
         return count
     }
     
@@ -232,7 +218,6 @@ extension SettingsViewController: UITableViewDataSource {
         cell.accessoryType = selectedGenres.contains(genre) ? .checkmark : .none
         cell.selectionStyle = .default
         cell.backgroundColor = .systemBackground
-        print("SettingsViewController: Configured cell for genre: \(genre), selected: \(selectedGenres.contains(genre))")
         return cell
     }
 }
@@ -247,6 +232,5 @@ extension SettingsViewController: UITableViewDelegate {
             selectedGenres.append(genre)
         }
         tableView.reloadData()
-        print("SettingsViewController: Toggled genre: \(genre), new selection: \(selectedGenres)")
     }
 }

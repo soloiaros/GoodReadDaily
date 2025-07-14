@@ -31,7 +31,6 @@ class MainViewController: UIViewController {
         super.viewDidLoad()
         for family in UIFont.familyNames.sorted() {
             let names = UIFont.fontNames(forFamilyName: family)
-            print("Family: \(family) Font names: \(names)")
         }
         title = "GoodReadDaily"
 //        navigationController?.navigationBar.prefersLargeTitles = true
@@ -130,7 +129,6 @@ class MainViewController: UIViewController {
     }
     
     @objc private func openFinishedArticles() {
-        print("Finished articles btn")
         let vc = FinishedViewController()
         navigationController?.pushViewController(vc, animated: true)
     }
