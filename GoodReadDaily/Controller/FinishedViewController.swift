@@ -9,6 +9,7 @@ class FinishedViewController: UIViewController {
         super.viewDidLoad()
         view.backgroundColor = .systemGroupedBackground
         title = "Finished Reading"
+        view.addSubviews(tableView, bottomBar)
         setupBottomBar() // Moved before setupTableView
         setupTableView()
         loadFinishedArticles()

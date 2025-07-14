@@ -29,6 +29,16 @@
 		};
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
+/* Begin PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet section */
+		FA0E21BE2E2549C2006AA42A /* Exceptions for "GoodReadDaily" folder in "Copy Bundle Resources" phase from "GoodReadDaily" target */ = {
+			isa = PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet;
+			buildPhase = 2045BB282E1863040003031A /* Resources */;
+			membershipExceptions = (
+				"Extensions/UIView+addSubviews.swift",
+			);
+		};
+/* End PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet section */
+
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		2045BB2C2E1863040003031A /* GoodReadDaily */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
@@ -218,6 +228,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "-.GoodReadDaily";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_USE_INTEGRATED_DRIVER = NO;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				UIMainStoryboardFile = "";

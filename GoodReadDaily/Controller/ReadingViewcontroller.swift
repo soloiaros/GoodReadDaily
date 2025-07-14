@@ -5,7 +5,7 @@ import FirebaseAuth
 import SwiftData
 
 final class ArticleViewController: UIViewController {
-    private let article: Article
+    let article: Article
     private var currentFontSize: CGFloat = 18 {
         didSet {
             updateFontSizes()
@@ -16,14 +16,78 @@ final class ArticleViewController: UIViewController {
     // UI Elements
     private let scrollView = UIScrollView()
     private let contentView = UIView()
-    private let titleLabel = UILabel()
-    private let subtitleLabel = UILabel()
-    private let authorLabel = UILabel()
-    private let genreLabel = UILabel()
-    private let idLabel = UILabel()
-    private let contentTextView = UITextView()
-    private let readButton = UIButton(type: .system)
+    private let titleLabel : UILabel = {
+        let label = UILabel()
+        label.font = UIFont.boldSystemFont(ofSize: 24)
+        label.numberOfLines = 0
+        label.textColor = .black
+        return label
+       
+    }()
+    private let subtitleLabel : UILabel = {
+        let label = UILabel()
+        label.font = UIFont.italicSystemFont(ofSize: 16)
+        label.textColor = .gray
+        label.numberOfLines = 0
+        return label
+    }()
+    private let authorLabel : UILabel = {
+        let label = UILabel()
+        label.font = UIFont.systemFont(ofSize: 14)
+        label.textColor = .darkGray
+        label.textAlignment = .right
+        return label
+    }()
+    private let genreLabel : UILabel = {
+        let label = UILabel()
+        label.font = UIFont.systemFont(ofSize: 14)
+        label.textColor = .darkGray
+        label.textAlignment = .right
+        return label
+        
+    }()
+    private let idLabel : UILabel = {
+        let label = UILabel()
+        label.font = UIFont.systemFont(ofSize: 0)
+        label.textColor = .lightGray
+        return label
+
+    }()
+    private let contentTextView : UITextView = {
+        let textView = UITextView()
+        textView.font = UIFont(name: "Tinos-Regular", size: 21)
+        textView.isEditable = false
+        textView.isSelectable = true
+        textView.isScrollEnabled = false
+        textView.textContainerInset = .zero
+        textView.textContainer.lineFragmentPadding = 0
+        textView.dataDetectorTypes = .all
+        textView.textColor = .black
+        return textView
+    }()
+    private let readButton : UIButton = {
+        let button = UIButton(type: .system)
+        button.setTitle("Mark as Read", for: .normal)
+        button.titleLabel?.font = UIFont.systemFont(ofSize: 18, weight: .medium)
+        button.backgroundColor = UIColor(red: 191/255, green: 155/255, blue: 132/255, alpha: 0.51)
+        button.setTitleColor(.white, for: .normal)
+        button.layer.cornerRadius = 15
+        button.layer.shadowColor = UIColor.black.cgColor
+        button.layer.shadowOpacity = 0.21
+        button.layer.shadowOffset = CGSize(width: 0, height: 2)
+        button.layer.shadowRadius = 4
+        button.addTarget(self, action: #selector(readButtonTapped), for: .touchUpInside)
+        return button
+    }()
     private var fontSizeControlView: FontSizeControlView?
+
+    
+    // Content TextView
+  
+//        contentView.tintColor =  UIColor(red: 255/255, green: 245/255, blue: 220/255, alpha: 1.0)
+    
+    
+    // Read Button Settings
     
     init(article: Article) {
         self.article = article
@@ -117,9 +181,12 @@ final class ArticleViewController: UIViewController {
     
     private func setupUI() {
         // ScrollView setup
+        
         view.addSubview(scrollView)
         scrollView.addSubview(contentView)
+        contentView.backgroundColor = UIColor(red: 255/255, green: 245/255, blue: 220/255, alpha: 1.0)
         
+        contentView.addSubviews(titleLabel, subtitleLabel, authorLabel, genreLabel, contentTextView, idLabel)
         scrollView.translatesAutoresizingMaskIntoConstraints = false
         contentView.translatesAutoresizingMaskIntoConstraints = false
         
@@ -137,62 +204,7 @@ final class ArticleViewController: UIViewController {
         ])
         
         // Title Label
-        titleLabel.font = UIFont.boldSystemFont(ofSize: 24)
-        titleLabel.numberOfLines = 0
-        titleLabel.textColor = .black
-        contentView.addSubview(titleLabel)
-        
-        // Subtitle Label
-        subtitleLabel.font = UIFont.italicSystemFont(ofSize: 16)
-        subtitleLabel.textColor = .gray
-        subtitleLabel.numberOfLines = 0
-        contentView.addSubview(subtitleLabel)
-        
-        
-        // Author Label
-        authorLabel.font = UIFont.systemFont(ofSize: 14)
-        authorLabel.textColor = .darkGray
-        authorLabel.textAlignment = .right
-        contentView.addSubview(authorLabel)
-               
-        // Genre Label
-        genreLabel.font = UIFont.systemFont(ofSize: 14)
-        genreLabel.textColor = .darkGray
-        genreLabel.textAlignment = .right
-        contentView.addSubview(genreLabel)
-        
-        
-        // ID Label
-        idLabel.font = UIFont.systemFont(ofSize: 0)
-        idLabel.textColor = .lightGray
-        contentView.addSubview(idLabel)
-        
-        // Content TextView
-        contentTextView.font = UIFont(name: "Tinos-Regular", size: 21)
-        contentTextView.isEditable = false
-        contentTextView.isSelectable = true
-        contentTextView.isScrollEnabled = false
-        contentTextView.textContainerInset = .zero
-        contentTextView.textContainer.lineFragmentPadding = 0
-        contentTextView.dataDetectorTypes = .all
-        contentView.backgroundColor = UIColor(red: 255/255, green: 245/255, blue: 220/255, alpha: 1.0)
-        contentTextView.textColor = .black
-//        contentView.tintColor =  UIColor(red: 255/255, green: 245/255, blue: 220/255, alpha: 1.0)
-        contentView.addSubview(contentTextView)
-        
-        // Read Button Settings
-        readButton.setTitle("Mark as Read", for: .normal)
-        readButton.titleLabel?.font = UIFont.systemFont(ofSize: 18, weight: .medium)
-        readButton.backgroundColor = UIColor(red: 191/255, green: 155/255, blue: 132/255, alpha: 0.51)
-        readButton.setTitleColor(.white, for: .normal)
-        readButton.layer.cornerRadius = 15
-        readButton.addTarget(self, action: #selector(readButtonTapped), for: .touchUpInside)
-    
-        readButton.layer.shadowColor = UIColor.black.cgColor
-        readButton.layer.shadowOpacity = 0.21
-        readButton.layer.shadowOffset = CGSize(width: 0, height: 2)
-        readButton.layer.shadowRadius = 4
-        readButton.addTarget(self, action: #selector(readButtonTapped), for: .touchUpInside)
+   
         contentView.addSubview(readButton)
         
         // Constraints
@@ -235,7 +247,7 @@ final class ArticleViewController: UIViewController {
             readButton.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
             readButton.heightAnchor.constraint(equalToConstant: 44),
             readButton.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -20)
-             ])
+            ])
     }
     
     private func setupContextMenu() {
@@ -422,8 +434,7 @@ class FontSizeControlView: UIView {
         stackView.distribution = .fillEqually
         stackView.spacing = 10
         
-        addSubview(stackView)
-        addSubview(closeButton)
+        addSubviews(stackView, closeButton)
         
         stackView.translatesAutoresizingMaskIntoConstraints = false
         closeButton.translatesAutoresizingMaskIntoConstraints = false

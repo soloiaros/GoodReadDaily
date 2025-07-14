@@ -14,6 +14,16 @@ class GenreSelectionViewController: UIViewController {
         return button
     }()
     
+    let welcomeLabel : UILabel = {
+        let label = UILabel()
+        label.text = "Welcome! Select genres to personalize your feed."
+        label.textAlignment = .center
+        label.numberOfLines = 0
+        label.font = UIFont.systemFont(ofSize: 18, weight: .medium)
+        label.translatesAutoresizingMaskIntoConstraints = false
+        return label
+    }()
+
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .systemBackground
@@ -25,13 +35,8 @@ class GenreSelectionViewController: UIViewController {
     }
     
     private func setupUI() {
-        let welcomeLabel = UILabel()
-        welcomeLabel.text = "Welcome! Select genres to personalize your feed."
-        welcomeLabel.textAlignment = .center
-        welcomeLabel.numberOfLines = 0
-        welcomeLabel.font = UIFont.systemFont(ofSize: 18, weight: .medium)
-        welcomeLabel.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview(welcomeLabel)
+       
+        view.addSubviews(welcomeLabel, genresTableView, saveButton)
         
         genresTableView.dataSource = self
         genresTableView.delegate = self
@@ -39,9 +44,6 @@ class GenreSelectionViewController: UIViewController {
         genresTableView.rowHeight = UITableView.automaticDimension
         genresTableView.estimatedRowHeight = 44
         genresTableView.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview(genresTableView)
-        
-        view.addSubview(saveButton)
         
         NSLayoutConstraint.activate([
             welcomeLabel.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 20),
