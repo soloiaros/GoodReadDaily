@@ -34,13 +34,25 @@ class MainViewController: UIViewController {
             print("Family: \(family) Font names: \(names)")
         }
         title = "GoodReadDaily"
+//        navigationController?.navigationBar.prefersLargeTitles = true
+//        navigationItem.largeTitleDisplayMode = .always
         view.backgroundColor = .systemGroupedBackground
         setupBottomBar()
         setupLayout()
         setupActions()
+        viewWillAppear(true)
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        let backButton = UIBarButtonItem()
+        backButton.title = "Back"
+        navigationItem.backBarButtonItem = backButton
     }
     
     private func setupLayout() {
+        
+        
         let stackView = UIStackView(arrangedSubviews: [todaysFeedButton, inProcessButton, dictionaryButton, finishedArticlesButton])
         stackView.axis = .vertical
         stackView.spacing = 20
@@ -62,13 +74,13 @@ class MainViewController: UIViewController {
         NSLayoutConstraint.activate([
             bottomBar.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             bottomBar.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            bottomBar.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
-            bottomBar.heightAnchor.constraint(equalToConstant: 60)
+            bottomBar.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            bottomBar.heightAnchor.constraint(equalToConstant: 100)
         ])
-        
-        bottomBar.onMainTapped = { [weak self] in
-            // Already on MainViewController, no action needed
-        }
+        bottomBar.updateMainButtonColor(true)
+//        bottomBar.onMainTapped = { [weak self] in
+//            // Already on MainViewController, no action needed
+//        }
         bottomBar.onResumeReadingTapped = { [weak self] in
             self?.navigateToResumeReading()
         }

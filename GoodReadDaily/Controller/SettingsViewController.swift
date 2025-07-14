@@ -31,6 +31,7 @@ class SettingsViewController: UIViewController {
         super.viewDidLoad()
         view.backgroundColor = .systemBackground
         title = "Settings"
+        navigationItem.hidesBackButton = true
         setupBottomBar()
         setupUI()
         setupActions()
@@ -121,9 +122,11 @@ class SettingsViewController: UIViewController {
         NSLayoutConstraint.activate([
             bottomBar.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             bottomBar.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            bottomBar.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
-            bottomBar.heightAnchor.constraint(equalToConstant: 60)
+            bottomBar.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            bottomBar.heightAnchor.constraint(equalToConstant: 100)
         ])
+        
+        bottomBar.updateSettingsButtonColor(true)
         
         bottomBar.onMainTapped = { [weak self] in
             self?.navigationController?.popToRootViewController(animated: true)
@@ -131,9 +134,9 @@ class SettingsViewController: UIViewController {
         bottomBar.onResumeReadingTapped = { [weak self] in
             self?.navigateToResumeReading()
         }
-        bottomBar.onSettingsTapped = { [weak self] in
-            // Already on Settings, no action needed
-        }
+//        bottomBar.onSettingsTapped = { [weak self] in
+//            // Already on Settings, no action needed
+//        }
         
         updateResumeReadingButton()
     }

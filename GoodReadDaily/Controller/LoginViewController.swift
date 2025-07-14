@@ -1,3 +1,4 @@
+//LoginVC
 import UIKit
 import FirebaseAuth
 
@@ -154,17 +155,8 @@ class LoginViewController: UIViewController {
     }
     
     private func routeAfterLogin() {
-        let rootVC: UIViewController
-        if let userData = SwiftDataManager.shared.getUserData() {
-            print("LoginViewController: UserData found, hasSeenGenreScreen: \(userData.preferences.hasSeenGenreScreen)")
-            rootVC = userData.preferences.hasSeenGenreScreen ? MainViewController() : GenreSelectionViewController()
-        } else {
-            print("LoginViewController: No userData found, routing to GenreSelectionViewController")
-            rootVC = GenreSelectionViewController()
-        }
-        
-        // Update the navigation stack
-        navigationController?.setViewControllers([rootVC], animated: true)
+        let mainVC = MainViewController()
+        navigationController?.setViewControllers([mainVC], animated: true)
     }
     
     private func showError(_ error: Error) {
@@ -177,3 +169,4 @@ class LoginViewController: UIViewController {
         present(alert, animated: true)
     }
 }
+

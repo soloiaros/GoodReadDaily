@@ -38,8 +38,8 @@ class InProcessViewController: UIViewController {
         NSLayoutConstraint.activate([
             bottomBar.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             bottomBar.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            bottomBar.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
-            bottomBar.heightAnchor.constraint(equalToConstant: 60)
+            bottomBar.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            bottomBar.heightAnchor.constraint(equalToConstant: 100)
         ])
         
         bottomBar.onMainTapped = { [weak self] in
@@ -116,7 +116,7 @@ class ArticleTableViewCell: UITableViewCell {
         selectionStyle = .none
         
         // Настройка контейнера с тенью
-        containerView.backgroundColor = .white
+        containerView.backgroundColor = UIColor.systemBrown.withAlphaComponent(0.1)  // Changed this line
         containerView.layer.cornerRadius = 12
         containerView.layer.masksToBounds = false
         
@@ -179,10 +179,10 @@ class ArticleTableViewCell: UITableViewCell {
     override func setHighlighted(_ highlighted: Bool, animated: Bool) {
         super.setHighlighted(highlighted, animated: animated)
         UIView.animate(withDuration: 0.2) {
-            // Изменяем цвет при нажатии на слегка серый
+            // Изменяем цвет при нажатии на более темный вариант
             self.containerView.backgroundColor = highlighted ?
-                UIColor(white: 0.95, alpha: 1.0) :
-                .white
+                UIColor.systemBrown.withAlphaComponent(0.2) :  // Slightly more opaque when highlighted
+                UIColor.systemBrown.withAlphaComponent(0.1)
         }
     }
 }
