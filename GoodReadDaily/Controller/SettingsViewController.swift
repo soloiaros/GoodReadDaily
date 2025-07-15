@@ -67,7 +67,7 @@ class SettingsViewController: UIViewController {
         genresTableView.estimatedRowHeight = 44
         genresTableView.translatesAutoresizingMaskIntoConstraints = false
 
-        contentView.addSubviews(updateButton, genresTableView, loginLabel, avatarImageView)
+        contentView.addSubviews(updateButton, genresTableView, loginLabel, avatarImageView, logoutButton)
         
         // Constraints
         NSLayoutConstraint.activate([
