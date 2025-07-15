@@ -3,11 +3,78 @@ import UIKit
 import FirebaseAuth
 
 class LoginViewController: UIViewController {
-    private let welcomeLabel = UILabel()
-    private let emailField = UITextField()
-    private let passwordField = UITextField()
-    private let loginButton = UIButton(type: .system)
-    private let registerButton = UIButton(type: .system)
+    private let welcomeLabel : UILabel = {
+        let label = UILabel()
+        label.text = "Welcome Back!"
+        label.font = .systemFont(ofSize: 28, weight: .bold)
+        label.textColor = .label
+        label.translatesAutoresizingMaskIntoConstraints = false
+        return label
+    }()
+    
+    private let emailField : UITextField = {
+        let field = UITextField()
+        field.autocapitalizationType = .none
+        field.placeholder = "Enter your email"
+        field.keyboardType = .emailAddress
+        field.borderStyle = .none
+        field.layer.cornerRadius = 12
+        field.layer.borderWidth = 1
+        field.layer.borderColor = UIColor.systemGray5.cgColor
+        field.backgroundColor = .systemBackground
+        field.leftView = UIView(frame: CGRect(x: 0, y: 0, width: 16, height: 0))
+        field.leftViewMode = .always
+        field.font = .systemFont(ofSize: 16)
+        field.layer.masksToBounds = true
+        field.layer.shadowColor = UIColor.black.cgColor
+        field.layer.shadowOpacity = 0.1
+        field.layer.shadowOffset = CGSize(width: 0, height: 2)
+        field.layer.shadowRadius = 4
+        return field
+    }()
+    private let passwordField : UITextField = {
+        let field = UITextField()
+        field.autocapitalizationType = .none
+        field.placeholder = "Enter your password"
+        field.isSecureTextEntry = true
+        field.borderStyle = .none
+        field.layer.cornerRadius = 12
+        field.layer.borderWidth = 1
+        field.layer.borderColor = UIColor.systemGray5.cgColor
+        field.backgroundColor = .systemBackground
+        field.leftView = UIView(frame: CGRect(x: 0, y: 0, width: 16, height: 0))
+        field.leftViewMode = .always
+        return field
+    }()
+    
+    private let loginButton : UIButton = {
+        let button = UIButton(type: .system)
+        button.setTitle("Sign In", for: .normal)
+        button.setTitleColor(.white, for: .normal)
+        button.backgroundColor = UIColor(red: 160/255.0, green: 134/255.0, blue: 121/255.0, alpha: 0.5)
+        button.layer.cornerRadius = 12
+        button.titleLabel?.font = .systemFont(ofSize: 18, weight: .semibold)
+        button.addTarget(self, action: #selector(signInTapped), for: .touchUpInside)
+        button.layer.masksToBounds = true
+        button.layer.shadowColor = UIColor.black.cgColor
+        button.layer.shadowOpacity = 0.2
+        button.layer.shadowOffset = CGSize(width: 0, height: 2)
+        button.layer.shadowRadius = 4
+        return button
+    }()
+    private let registerButton : UIButton = {
+        let button = UIButton(type: .system)
+        button.setTitle("Create Account", for: .normal)
+        button.setTitleColor(UIColor(red: 160/255.0, green: 134/255.0, blue: 121/255.0, alpha: 0.5), for: .normal)
+        button.backgroundColor = .clear
+        button.layer.cornerRadius = 12
+        button.layer.borderWidth = 1
+        button.layer.borderColor = UIColor(red: 160/255.0, green: 134/255.0, blue: 121/255.0, alpha: 0.5).cgColor
+        button.titleLabel?.font = .systemFont(ofSize: 16, weight: .medium)
+        button.addTarget(self, action: #selector(registerTapped), for: .touchUpInside)
+        return button
+    }()
+    
     private let passwordToggleButton = UIButton(type: .custom)
     
     override func viewDidLoad() {
@@ -18,34 +85,10 @@ class LoginViewController: UIViewController {
     
     private func configureTextFields() {
         // Email Field
-        emailField.autocapitalizationType = .none
-        emailField.placeholder = "Enter your email"
-        emailField.keyboardType = .emailAddress
-        emailField.borderStyle = .none
-        emailField.layer.cornerRadius = 12
-        emailField.layer.borderWidth = 1
-        emailField.layer.borderColor = UIColor.systemGray5.cgColor
-        emailField.backgroundColor = .systemBackground
-        emailField.leftView = UIView(frame: CGRect(x: 0, y: 0, width: 16, height: 0))
-        emailField.leftViewMode = .always
-        emailField.font = .systemFont(ofSize: 16)
-        emailField.layer.masksToBounds = true
-        emailField.layer.shadowColor = UIColor.black.cgColor
-        emailField.layer.shadowOpacity = 0.1
-        emailField.layer.shadowOffset = CGSize(width: 0, height: 2)
-        emailField.layer.shadowRadius = 4
+       
         
         // Password Field
-        passwordField.autocapitalizationType = .none
-        passwordField.placeholder = "Enter your password"
-        passwordField.isSecureTextEntry = true
-        passwordField.borderStyle = .none
-        passwordField.layer.cornerRadius = 12
-        passwordField.layer.borderWidth = 1
-        passwordField.layer.borderColor = UIColor.systemGray5.cgColor
-        passwordField.backgroundColor = .systemBackground
-        passwordField.leftView = UIView(frame: CGRect(x: 0, y: 0, width: 16, height: 0))
-        passwordField.leftViewMode = .always
+       
         
         // Password Toggle Button
         passwordToggleButton.setImage(UIImage(systemName: "eye"), for: .normal)
@@ -58,15 +101,7 @@ class LoginViewController: UIViewController {
         let toggleContainer = UIView(frame: CGRect(x: 0, y: 0, width: 48, height: 40))
         passwordToggleButton.frame = CGRect(x: 8, y: 0, width: 40, height: 40)
         toggleContainer.addSubview(passwordToggleButton)
-        passwordField.rightView = toggleContainer
-        passwordField.rightViewMode = .always
-        
-        passwordField.font = .systemFont(ofSize: 16)
-        passwordField.layer.masksToBounds = true
-        passwordField.layer.shadowColor = UIColor.black.cgColor
-        passwordField.layer.shadowOpacity = 0.1
-        passwordField.layer.shadowOffset = CGSize(width: 0, height: 2)
-        passwordField.layer.shadowRadius = 4
+
     }
     
     @objc private func togglePasswordVisibility() {
@@ -78,36 +113,6 @@ class LoginViewController: UIViewController {
         view.backgroundColor = .systemBackground
         navigationItem.backButtonTitle = ""
         
-        // Welcome Label
-        welcomeLabel.text = "Welcome Back!"
-        welcomeLabel.font = .systemFont(ofSize: 28, weight: .bold)
-        welcomeLabel.textColor = .label
-        welcomeLabel.translatesAutoresizingMaskIntoConstraints = false
-        
-        // Login Button
-        loginButton.setTitle("Sign In", for: .normal)
-        loginButton.setTitleColor(.white, for: .normal)
-        loginButton.backgroundColor = UIColor(red: 160/255.0, green: 134/255.0, blue: 121/255.0, alpha: 0.5)
-        loginButton.layer.cornerRadius = 12
-        loginButton.titleLabel?.font = .systemFont(ofSize: 18, weight: .semibold)
-        loginButton.addTarget(self, action: #selector(signInTapped), for: .touchUpInside)
-        loginButton.layer.masksToBounds = true
-        loginButton.layer.shadowColor = UIColor.black.cgColor
-        loginButton.layer.shadowOpacity = 0.2
-        loginButton.layer.shadowOffset = CGSize(width: 0, height: 2)
-        loginButton.layer.shadowRadius = 4
-        
-        // Register Button
-        registerButton.setTitle("Create Account", for: .normal)
-        registerButton.setTitleColor(UIColor(red: 160/255.0, green: 134/255.0, blue: 121/255.0, alpha: 0.5), for: .normal)
-        registerButton.backgroundColor = .clear
-        registerButton.layer.cornerRadius = 12
-        registerButton.layer.borderWidth = 1
-        registerButton.layer.borderColor = UIColor(red: 160/255.0, green: 134/255.0, blue: 121/255.0, alpha: 0.5).cgColor
-        registerButton.titleLabel?.font = .systemFont(ofSize: 16, weight: .medium)
-        registerButton.addTarget(self, action: #selector(registerTapped), for: .touchUpInside)
-        
-        // Stack View
         let stackView = UIStackView(arrangedSubviews: [welcomeLabel, emailField, passwordField, loginButton, registerButton])
         stackView.axis = .vertical
         stackView.spacing = 20

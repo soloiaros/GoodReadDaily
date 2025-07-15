@@ -29,11 +29,11 @@ class LoadingViewController: UIViewController {
         
         // Set the static image (replace "loadingImage" with your image name)
         loadingImageView.image = UIImage(named: "loadingImage")
-        view.addSubview(loadingImageView)
         
         // Add activity indicator
-        view.addSubview(activityIndicator)
         activityIndicator.startAnimating()
+        
+        view.addSubviews(activityIndicator, loadingImageView)
         
         // Full-screen image constraints
         NSLayoutConstraint.activate([

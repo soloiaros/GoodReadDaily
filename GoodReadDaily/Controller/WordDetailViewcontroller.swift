@@ -272,8 +272,7 @@ class WordDetailViewController: UIViewController {
         definitionLabel.font = .systemFont(ofSize: 16)
         definitionLabel.translatesAutoresizingMaskIntoConstraints = false
         
-        container.addSubview(indexLabel)
-        container.addSubview(definitionLabel)
+        container.addSubviews(indexLabel, definitionLabel)
         
         NSLayoutConstraint.activate([
             indexLabel.topAnchor.constraint(equalTo: container.topAnchor),

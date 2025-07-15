@@ -127,7 +127,7 @@ class ArticleTableViewCell: UITableViewCell {
         containerView.layer.shadowOpacity = 0.1
         
         // Настройка текста
-        titleLabel.textColor = .black
+//        titleLabel.textColor = .black
         titleLabel.numberOfLines = 0
         titleLabel.font = UIFont.systemFont(ofSize: 17, weight: .semibold)
         subtitleLabel.numberOfLines = 0

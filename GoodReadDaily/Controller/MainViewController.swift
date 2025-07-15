@@ -7,7 +7,7 @@ class MainViewController: UIViewController {
         title: "Today's Feed",
         subtitle: "Your 3 fresh articles are ready!",
         isLarge: true,
-        backgroundColor: UIColor(red: 160/255.0, green: 134/255.0, blue: 121/255.0, alpha: 0.5)
+        backgroundColor: .generalBlockBackground
     )
     
     private let inProcessButton = MainWidgetButton(
@@ -168,7 +168,7 @@ class MainWidgetButton: UIControl {
         
         subtitleLabelView.text = subtitle
         subtitleLabelView.font = UIFont.systemFont(ofSize: isLarge ? 16 : 14)
-        subtitleLabelView.textColor = .darkGray
+        subtitleLabelView.textColor = .gray
         subtitleLabelView.numberOfLines = 0
         subtitleLabelView.isUserInteractionEnabled = false
         

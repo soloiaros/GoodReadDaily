@@ -52,14 +52,12 @@ class SettingsViewController: UIViewController {
         avatarImageView.tintColor = .systemGray
         avatarImageView.contentMode = .scaleAspectFit
         avatarImageView.translatesAutoresizingMaskIntoConstraints = false
-        contentView.addSubview(avatarImageView)
         
         // Login Label
         loginLabel.font = UIFont.systemFont(ofSize: 18, weight: .medium)
         loginLabel.textAlignment = .center
         loginLabel.numberOfLines = 0
         loginLabel.translatesAutoresizingMaskIntoConstraints = false
-        contentView.addSubview(loginLabel)
         
         // Genres Table View
         genresTableView.dataSource = self
@@ -68,13 +66,8 @@ class SettingsViewController: UIViewController {
         genresTableView.rowHeight = UITableView.automaticDimension
         genresTableView.estimatedRowHeight = 44
         genresTableView.translatesAutoresizingMaskIntoConstraints = false
-        contentView.addSubview(genresTableView)
-        
-        // Update Button
-        contentView.addSubview(updateButton)
-        
-        // Logout Button
-        contentView.addSubview(logoutButton)
+
+        contentView.addSubviews(updateButton, genresTableView, loginLabel, avatarImageView)
         
         // Constraints
         NSLayoutConstraint.activate([
