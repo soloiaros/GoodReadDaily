@@ -6,7 +6,7 @@ import SwiftData
 
 final class ArticleViewController: UIViewController {
     let article: Article
-    private var currentFontSize: CGFloat = 18 {
+    private var currentFontSize: CGFloat = 21 {
         didSet {
             updateFontSizes()
             fontSizeControlView?.updateSize(currentFontSize)
@@ -18,7 +18,7 @@ final class ArticleViewController: UIViewController {
     private let contentView = UIView()
     private let titleLabel : UILabel = {
         let label = UILabel()
-        label.font = UIFont.boldSystemFont(ofSize: 24)
+        label.font = UIFont.boldSystemFont(ofSize: 27)
         label.numberOfLines = 0
         label.textColor = .black
         return label
@@ -26,33 +26,27 @@ final class ArticleViewController: UIViewController {
     }()
     private let subtitleLabel : UILabel = {
         let label = UILabel()
-        label.font = UIFont.italicSystemFont(ofSize: 16)
+        label.font = UIFont.italicSystemFont(ofSize: 19)
         label.textColor = .gray
         label.numberOfLines = 0
         return label
     }()
     private let authorLabel : UILabel = {
         let label = UILabel()
-        label.font = UIFont.systemFont(ofSize: 14)
+        label.font = UIFont.systemFont(ofSize: 17)
         label.textColor = .darkGray
         label.textAlignment = .right
         return label
     }()
     private let genreLabel : UILabel = {
         let label = UILabel()
-        label.font = UIFont.systemFont(ofSize: 14)
+        label.font = UIFont.systemFont(ofSize: 17)
         label.textColor = .darkGray
         label.textAlignment = .right
         return label
         
     }()
-    private let idLabel : UILabel = {
-        let label = UILabel()
-        label.font = UIFont.systemFont(ofSize: 0)
-        label.textColor = .lightGray
-        return label
-
-    }()
+    
     private let contentTextView : UITextView = {
         let textView = UITextView()
         textView.font = UIFont(name: "Tinos-Regular", size: 21)
@@ -80,14 +74,6 @@ final class ArticleViewController: UIViewController {
         return button
     }()
     private var fontSizeControlView: FontSizeControlView?
-
-    
-    // Content TextView
-  
-//        contentView.tintColor =  UIColor(red: 255/255, green: 245/255, blue: 220/255, alpha: 1.0)
-    
-    
-    // Read Button Settings
     
     init(article: Article) {
         self.article = article
@@ -172,7 +158,7 @@ final class ArticleViewController: UIViewController {
     }
     
     private func updateFontSizes() {
-        contentTextView.font = UIFont.systemFont(ofSize: currentFontSize)
+        contentTextView.font = UIFont(name: "Tinos-Regular", size: currentFontSize)
         titleLabel.font = UIFont.boldSystemFont(ofSize: currentFontSize + 6)
         subtitleLabel.font = UIFont.italicSystemFont(ofSize: currentFontSize - 2)
         authorLabel.font = UIFont.systemFont(ofSize: currentFontSize - 4)
@@ -186,7 +172,7 @@ final class ArticleViewController: UIViewController {
         scrollView.addSubview(contentView)
         contentView.backgroundColor = UIColor(red: 255/255, green: 245/255, blue: 220/255, alpha: 1.0)
         
-        contentView.addSubviews(titleLabel, subtitleLabel, authorLabel, genreLabel, contentTextView, idLabel)
+        contentView.addSubviews(titleLabel, subtitleLabel, authorLabel, genreLabel, contentTextView)
         scrollView.translatesAutoresizingMaskIntoConstraints = false
         contentView.translatesAutoresizingMaskIntoConstraints = false
         
@@ -212,7 +198,6 @@ final class ArticleViewController: UIViewController {
         subtitleLabel.translatesAutoresizingMaskIntoConstraints = false
         authorLabel.translatesAutoresizingMaskIntoConstraints = false
         genreLabel.translatesAutoresizingMaskIntoConstraints = false
-        idLabel.translatesAutoresizingMaskIntoConstraints = false
         contentTextView.translatesAutoresizingMaskIntoConstraints = false
         readButton.translatesAutoresizingMaskIntoConstraints = false
         
@@ -224,24 +209,21 @@ final class ArticleViewController: UIViewController {
             subtitleLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 8),
             subtitleLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
             subtitleLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
-                 
+            
             authorLabel.topAnchor.constraint(equalTo: subtitleLabel.bottomAnchor, constant: 8),
             authorLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
             authorLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
-             
-                 
+            
+            
             genreLabel.topAnchor.constraint(equalTo: authorLabel.bottomAnchor, constant: 4),
             genreLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
             genreLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
-                 
-            idLabel.topAnchor.constraint(equalTo: genreLabel.bottomAnchor, constant: 0),
-            idLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
-            idLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
-                 
-            contentTextView.topAnchor.constraint(equalTo: idLabel.bottomAnchor, constant: 16),
+            
+            
+            contentTextView.topAnchor.constraint(equalTo: genreLabel.bottomAnchor, constant: 16),
             contentTextView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
             contentTextView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
-                 
+            
             readButton.topAnchor.constraint(equalTo: contentTextView.bottomAnchor, constant: 24),
             readButton.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
             readButton.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
@@ -285,7 +267,6 @@ final class ArticleViewController: UIViewController {
         subtitleLabel.text = article.subtitle
         authorLabel.text = "By \(article.author)"
         genreLabel.text = "#\(article.genre)"
-        idLabel.text = "ID: \(article.id)"
         contentTextView.text = article.content
     }
     
